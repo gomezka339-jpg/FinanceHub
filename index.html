@@ -1,0 +1,3639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceHub — Herramientas Financieras Profesionales Globales</title>
+  <meta name="description" content="Calculadoras financieras gratuitas para profesionales: divisas en tiempo real, interés compuesto, retiro, nómina USA, FIRE, hipotecas y más. Sin registro." />
+  <meta name="keywords" content="calculadora financiera, tipo de cambio, divisas en vivo, interés compuesto, retiro, 401k, FIRE, hipoteca, nómina USA, finanzas personales" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://financehub.pages.dev/" />
+  <meta property="og:title" content="FinanceHub — Herramientas Financieras Profesionales" />
+  <meta property="og:description" content="Calculadoras financieras gratuitas, divisas en tiempo real y más. Sin registro." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://financehub.pages.dev/" />
+  <meta property="og:image" content="https://financehub.pages.dev/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FinanceHub — Herramientas Financieras Profesionales" />
+  <meta name="twitter:description" content="Conversores de divisas en tiempo real, calculadoras financieras gratuitas. Sin registro." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Structured Data para SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FinanceHub",
+    "url": "https://financehub.pages.dev/",
+    "description": "Herramientas financieras gratuitas: conversor de divisas en tiempo real, calculadoras de interés compuesto, retiro, préstamos, inflación y más.",
+    "applicationCategory": "FinanceApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": "Conversor de divisas en tiempo real, Calculadora de interés compuesto, Calculadora de retiro, Calculadora de préstamos, Calculadora de inflación, Glosario financiero, Comparador de brokers"
+  }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Google AdSense — activado solo si usuario acepta cookies (GDPR compliant) -->
+  <!-- REEMPLAZA ca-pub-XXXXXXXXXXXXXXXX con tu Publisher ID real de AdSense -->
+  <script id="adsense-script" data-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+  <!-- AdSense verification meta — reemplaza con tu código real -->
+  <!-- <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX"> -->
+  <style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #1D9E75;
+  --green-dark: #0F6E56;
+  --green-deep: #085041;
+  --green-bg: #E1F5EE;
+  --green-border: #9FE1CB;
+  --red: #E24B4A;
+  --red-bg: #FCEBEB;
+  --red-border: #F7C1C1;
+  --amber: #EF9F27;
+  --amber-bg: #FAEEDA;
+  --bg: #F7F6F3;
+  --bg2: #FFFFFF;
+  --bg3: #F0EEE9;
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.15);
+  --text: #1A1917;
+  --text2: #6B6A65;
+  --text3: #9B9A95;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== FLOATING COINS BACKGROUND ===== */
+#coins-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.22;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 0.5px solid var(--border);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.logo {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+.logo span { color: var(--green); }
+.nav-links {
+  display: flex;
+  gap: 2px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-links a {
+  text-decoration: none;
+  font-size: 13px;
+  color: var(--text2);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.nav-links a:hover { background: var(--bg3); color: var(--text); }
+.nav-cta {
+  flex-shrink: 0;
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-family: var(--font);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.nav-cta:hover { background: var(--green-dark); }
+
+/* ===== HERO ===== */
+.hero {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(160deg, #ffffff 0%, #f0faf6 50%, #e8f7f1 100%);
+  padding: 72px 24px 64px;
+  text-align: center;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(29,158,117,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 720px; margin: 0 auto; position: relative; }
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--green-dark);
+  background: var(--green-bg);
+  border: 1px solid var(--green-border);
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+.live-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1.8s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  font-weight: 300;
+  letter-spacing: -1.5px;
+  color: var(--text);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+.hero h1 em {
+  font-style: normal;
+  color: var(--green);
+  font-weight: 600;
+}
+.hero p {
+  font-size: 17px;
+  color: var(--text2);
+  line-height: 1.6;
+  margin-bottom: 36px;
+}
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.hs { display: flex; flex-direction: column; align-items: center; }
+.hs-num {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text);
+  font-family: var(--mono);
+  letter-spacing: -1px;
+}
+.hs-label { font-size: 13px; color: var(--text3); }
+
+/* ===== TICKER ===== */
+.ticker-bar {
+  position: relative;
+  z-index: 1;
+  background: var(--text);
+  overflow: hidden;
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+.ticker-track {
+  display: flex;
+  gap: 0;
+  animation: ticker-scroll 60s linear infinite;
+  white-space: nowrap;
+}
+@keyframes ticker-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.ticker-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 20px;
+  font-size: 12.5px;
+  font-family: var(--mono);
+  color: rgba(255,255,255,0.85);
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.ticker-item .t-code { color: rgba(255,255,255,0.5); }
+.ticker-item .t-up { color: #4EEAB0; }
+.ticker-item .t-down { color: #FF7B79; }
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+/* ===== SECTIONS ===== */
+.section { padding: 60px 0 0; }
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.section-header h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--text2);
+  margin-top: 4px;
+}
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--mono);
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+/* ===== CONTROLS BAR ===== */
+.controls-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.control-group { display: flex; flex-direction: column; gap: 4px; }
+.control-group label { font-size: 12px; color: var(--text3); font-weight: 500; }
+.control-group select, .control-group input {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-width: 180px;
+}
+.control-group select:focus, .control-group input:focus { border-color: var(--green); }
+
+/* ===== MAIN RATE CARD ===== */
+.main-rate-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+.mrc-label { font-size: 13px; color: var(--text3); margin-bottom: 4px; font-family: var(--mono); }
+.mrc-big { font-size: 48px; font-weight: 300; font-family: var(--mono); color: var(--text); letter-spacing: -2px; line-height: 1; }
+.mrc-sub { font-size: 13px; color: var(--text2); margin-top: 8px; }
+.mrc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.badge-chg {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--mono);
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.badge-chg.up { background: var(--green-bg); color: var(--green-dark); }
+.badge-chg.down { background: var(--red-bg); color: var(--red); }
+.mrc-range { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+
+/* ===== API STATUS BADGE ===== */
+.api-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+.api-status.real { background: var(--green-bg); color: var(--green-dark); border: 1px solid var(--green-border); }
+.api-status.sim  { background: var(--amber-bg); color: #926200; border: 1px solid #f0d087; }
+
+/* ===== CHART CARDS ===== */
+.chart-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.chart-header span:first-child { font-weight: 500; color: var(--text); }
+.chart-pts { color: var(--text3); font-family: var(--mono); }
+.chart-wrap { position: relative; height: 200px; }
+.chart-wrap.tall { height: 280px; }
+.chart-wrap.medium { height: 200px; flex: 1; min-width: 200px; }
+
+/* ===== CURRENCY GRID ===== */
+.currency-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.curr-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  user-select: none;
+}
+.curr-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.curr-card.active { border-color: var(--green); background: var(--green-bg); }
+.cc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.cc-flag { font-size: 20px; line-height: 1; }
+.cc-chg { font-size: 11px; font-weight: 600; font-family: var(--mono); }
+.cc-chg.up { color: var(--green); }
+.cc-chg.down { color: var(--red); }
+.cc-code { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 2px; }
+.cc-rate { font-size: 18px; font-weight: 600; font-family: var(--mono); color: var(--text); letter-spacing: -0.5px; }
+.cc-name { font-size: 11px; color: var(--text3); margin-top: 2px; line-height: 1.3; }
+
+/* ===== CALC / CONVERTER CARDS ===== */
+.calc-card, .converter-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+.calc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-group.full { grid-column: 1 / -1; }
+.field-group label {
+  font-size: 13px;
+  color: var(--text2);
+  font-weight: 500;
+}
+.field-group input[type="number"],
+.field-group input[type="text"],
+.field-group select {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.field-group input:focus, .field-group select:focus { border-color: var(--green); background: #fff; }
+.field-group input[type="range"] {
+  width: 100%;
+  accent-color: var(--green);
+  height: 4px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+/* ===== METRICS ROW ===== */
+.metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.metric {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+}
+.m-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.m-val { font-size: 20px; font-weight: 600; font-family: var(--mono); color: var(--text); letter-spacing: -0.5px; }
+.m-val.green { color: var(--green); }
+.m-val.red { color: var(--red); }
+
+/* ===== CONVERTER ===== */
+.converter-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.conv-field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 120px; }
+.conv-field label { font-size: 12px; color: var(--text3); font-weight: 500; }
+.conv-field input, .conv-field select {
+  font-family: var(--mono);
+  font-size: 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s;
+  width: 100%;
+}
+.conv-field input:focus, .conv-field select:focus { border-color: var(--green); background: #fff; }
+.swap-btn {
+  font-size: 18px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.2s;
+  flex-shrink: 0;
+  margin-bottom: 1px;
+}
+.swap-btn:hover { background: var(--green-bg); transform: rotate(180deg); }
+.conv-result {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.cr-main { font-size: 32px; font-weight: 300; font-family: var(--mono); color: var(--text); letter-spacing: -1px; }
+.cr-rate { font-size: 13px; color: var(--text3); margin-top: 6px; font-family: var(--mono); }
+.conv-quick {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.cq-label { font-size: 12px; color: var(--text3); }
+.conv-quick button {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 12px;
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.conv-quick button:hover { background: var(--green-bg); border-color: var(--green); color: var(--green-dark); }
+.conv-table { overflow-x: auto; }
+.conv-table table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.conv-table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+}
+.conv-table td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.conv-table tr:last-child td { border-bottom: none; }
+.conv-table tr:hover td { background: var(--bg); }
+.td-rate { font-family: var(--mono); font-weight: 500; }
+.td-chg { font-family: var(--mono); font-size: 12px; }
+.td-chg.up { color: var(--green); }
+.td-chg.down { color: var(--red); }
+
+/* ===== CHART LEGEND ===== */
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.leg-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+.leg-dot.green { background: var(--green); }
+.leg-dot.gray  { background: #B4B2A9; }
+.leg-dot.teal  { background: #5DCAA5; }
+.leg-dot.red   { background: var(--red); }
+
+/* ===== LOAN CHARTS ===== */
+.loan-charts { display: flex; gap: 16px; flex-wrap: wrap; }
+
+/* ===== RESULT BANNER ===== */
+.result-banner {
+  background: linear-gradient(135deg, var(--green-bg), #c8f0e0);
+  border: 1px solid var(--green-border);
+  border-radius: var(--radius-sm);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.rb-label { font-size: 14px; color: var(--green-dark); }
+.rb-val { font-size: 28px; font-weight: 700; color: var(--green-dark); font-family: var(--mono); }
+
+/* ===== TOOLS GRID ===== */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.tool-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  cursor: pointer;
+  position: relative;
+}
+.tool-card:hover { border-color: var(--green); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.tc-icon { font-size: 28px; margin-bottom: 10px; }
+.tc-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.tc-desc { font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 12px; }
+.tc-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.tc-badge.soon { background: var(--amber-bg); color: #7a5200; border: 1px solid #f0d087; }
+.tc-badge.new  { background: var(--green-bg); color: var(--green-dark); border: 1px solid var(--green-border); }
+
+/* ===== INFLATION CALC ===== */
+.infl-result {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+.infl-box { text-align: center; }
+.infl-label { font-size: 12px; color: var(--text3); margin-bottom: 4px; }
+.infl-val { font-size: 26px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+.infl-arrow { font-size: 28px; color: var(--red); }
+
+/* ===== MILLIONAIRE CALC ===== */
+.mill-result-banner {
+  background: linear-gradient(135deg, #1A1917, #2a2926);
+  border-radius: var(--radius);
+  padding: 28px;
+  color: #fff;
+  text-align: center;
+  margin-top: 20px;
+}
+.mill-banner-label { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.mill-banner-val { font-size: 48px; font-weight: 300; font-family: var(--mono); color: #4EEAB0; letter-spacing: -2px; }
+.mill-banner-sub { font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 8px; }
+
+/* ===== DIVIDEND CALC ===== */
+.div-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
+
+/* ===== BUY vs RENT ===== */
+.bvr-results { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+.bvr-card { padding: 20px; border-radius: var(--radius-sm); border: 2px solid; }
+.bvr-card.buy { border-color: var(--green); background: var(--green-bg); }
+.bvr-card.rent { border-color: var(--red); background: var(--red-bg); }
+.bvr-title { font-size: 16px; font-weight: 600; margin-bottom: 12px; }
+.bvr-card.buy .bvr-title { color: var(--green-dark); }
+.bvr-card.rent .bvr-title { color: var(--red); }
+.bvr-winner {
+  text-align: center;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  margin-top: 16px;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* ===== GLOSSARY ===== */
+.glossary-search {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  background: var(--bg2);
+  color: var(--text);
+  outline: none;
+  margin-bottom: 20px;
+  font-family: var(--font);
+  transition: border-color 0.15s;
+}
+.glossary-search:focus { border-color: var(--green); }
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+.gloss-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  transition: border-color 0.15s;
+}
+.gloss-item:hover { border-color: var(--green); }
+.gloss-term { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.gloss-def { font-size: 13px; color: var(--text2); line-height: 1.5; }
+.gloss-cat {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--green-bg);
+  color: var(--green-dark);
+  margin-top: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ===== BROKER COMPARISON ===== */
+.broker-table { overflow-x: auto; }
+.broker-table table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.broker-table th {
+  background: var(--bg);
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  border-bottom: 2px solid var(--border);
+  text-align: left;
+  font-weight: 600;
+}
+.broker-table td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.broker-table tr:last-child td { border-bottom: none; }
+.broker-table tr:hover td { background: var(--bg); }
+.broker-name { font-weight: 600; font-size: 14px; color: var(--text); }
+.broker-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+.broker-badge.best { background: var(--green-bg); color: var(--green-dark); }
+.broker-badge.usa { background: #e8eaff; color: #3050c8; }
+.check { color: var(--green); font-size: 14px; }
+.cross { color: var(--red); font-size: 14px; }
+
+/* ===== SUPPORT / WHATSAPP ===== */
+.whatsapp-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 300;
+  background: #25D366;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+}
+.whatsapp-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.5); }
+.whatsapp-icon { font-size: 20px; }
+
+/* ===== TABS for expanded sections ===== */
+.section-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.section-tabs::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 10px 18px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  margin-bottom: -1px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--green); border-bottom-color: var(--green); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ===== PAGES (privacy, terms, support) ===== */
+.page-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+.page-overlay.open { display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; }
+.page-modal {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 760px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.page-modal-header {
+  background: var(--text);
+  color: #fff;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.page-modal-header h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; }
+.modal-close {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.25); }
+.page-modal-body {
+  padding: 32px;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--text2);
+}
+.page-modal-body h3 { font-size: 16px; font-weight: 600; color: var(--text); margin: 20px 0 8px; }
+.page-modal-body h3:first-child { margin-top: 0; }
+.page-modal-body p { margin-bottom: 12px; }
+.page-modal-body ul { padding-left: 20px; margin-bottom: 12px; }
+.page-modal-body li { margin-bottom: 6px; }
+
+/* ===== FOOTER ===== */
+.footer {
+  position: relative;
+  z-index: 1;
+  background: var(--text);
+  color: rgba(255,255,255,0.7);
+  padding: 48px 24px 32px;
+  margin-top: 80px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  align-items: start;
+  flex-wrap: wrap;
+}
+.footer-brand .logo { color: #fff; font-size: 22px; margin-bottom: 10px; }
+.footer-brand .logo span { color: var(--green); }
+.footer-brand p { font-size: 13px; line-height: 1.6; max-width: 360px; }
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.footer-links a {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  transition: color 0.15s;
+  cursor: pointer;
+}
+.footer-links a:hover { color: #fff; }
+.footer-note {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 20px;
+  line-height: 1.6;
+}
+.footer-note a { color: rgba(255,255,255,0.5); }
+
+/* ===== API KEY SECTION ===== */
+.api-setup {
+  background: linear-gradient(135deg, #1A1917, #2a2926);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.api-setup-text { flex: 1; min-width: 200px; }
+.api-setup-text h4 { color: #fff; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.api-setup-text p { color: rgba(255,255,255,0.55); font-size: 13px; }
+.api-setup-input {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.api-setup-input input {
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 9px 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  outline: none;
+  width: 240px;
+  transition: border-color 0.15s;
+}
+.api-setup-input input::placeholder { color: rgba(255,255,255,0.3); }
+.api-setup-input input:focus { border-color: var(--green); }
+.api-setup-input button {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-size: 13px;
+  font-family: var(--font);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.api-setup-input button:hover { background: var(--green-dark); }
+
+
+/* ===== COOKIE CONSENT BANNER ===== */
+#cookieBanner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+  background: #1A1917; color: rgba(255,255,255,0.88);
+  padding: 16px 24px; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 13.5px; line-height: 1.5;
+  transform: translateY(100%); transition: transform 0.4s ease;
+}
+#cookieBanner.show { transform: translateY(0); }
+#cookieBanner a { color: #4EEAB0; text-decoration: underline; cursor: pointer; }
+.cookie-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+.cookie-btn-accept {
+  background: var(--green); color: #fff; border: none; border-radius: 8px;
+  padding: 9px 20px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; transition: background 0.15s;
+}
+.cookie-btn-accept:hover { background: var(--green-dark); }
+.cookie-btn-decline {
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  padding: 9px 16px; font-size: 13px; font-family: var(--font);
+  cursor: pointer; transition: background 0.15s;
+}
+.cookie-btn-decline:hover { background: rgba(255,255,255,0.15); }
+
+/* ===== NEW TOOLS: NET WORTH / BUDGET ===== */
+.nw-row {
+  display: grid; grid-template-columns: 2fr 1fr auto;
+  gap: 8px; align-items: center; margin-bottom: 8px;
+}
+.nw-row input, .nw-row select {
+  font-family: var(--mono); font-size: 13px; padding: 8px 10px;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--bg); color: var(--text); outline: none; width: 100%;
+}
+.nw-row input:focus { border-color: var(--green); }
+.nw-del-btn {
+  background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border);
+  border-radius: 6px; padding: 7px 10px; cursor: pointer; font-size: 13px;
+}
+.nw-add-btn {
+  background: var(--green-bg); color: var(--green-dark);
+  border: 1px solid var(--green-border); border-radius: 8px;
+  padding: 8px 16px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; margin-top: 4px;
+}
+.nw-cat-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.6px; color: var(--text3); margin: 16px 0 6px;
+}
+
+
+/* ===== NET WORTH / PRO TOOLS ===== */
+.nw-row {
+  display: grid; grid-template-columns: 2fr 1fr auto;
+  gap: 8px; align-items: center; margin-bottom: 8px;
+}
+.nw-row input {
+  font-family: var(--mono); font-size: 13px; padding: 8px 10px;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--bg); color: var(--text); outline: none; width: 100%;
+}
+.nw-row input:focus { border-color: var(--green); }
+.nw-del-btn {
+  background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border);
+  border-radius: 6px; padding: 7px 10px; cursor: pointer; font-size: 13px;
+}
+.nw-add-btn {
+  background: var(--green-bg); color: var(--green-dark);
+  border: 1px solid var(--green-border); border-radius: 8px;
+  padding: 8px 16px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer; margin-top: 4px;
+}
+.nw-cat-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.6px; color: var(--text3); margin: 14px 0 6px;
+}
+.method-tab {
+  padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border2);
+  background: var(--bg2); font-size: 13px; font-weight: 500;
+  cursor: pointer; font-family: var(--font); transition: all 0.15s; color: var(--text2);
+}
+.method-tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+/* ===== COOKIE CONSENT BANNER ===== */
+#cookieBanner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+  background: #1A1917; color: rgba(255,255,255,0.88);
+  padding: 16px 24px; display: flex; align-items: center;
+  justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  font-size: 13.5px; line-height: 1.5;
+  transform: translateY(100%); transition: transform 0.4s ease;
+}
+#cookieBanner.show { transform: translateY(0); }
+#cookieBanner a { color: #4EEAB0; text-decoration: underline; cursor: pointer; }
+.cookie-actions { display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap; }
+.cookie-btn-accept {
+  background: var(--green); color: #fff; border: none; border-radius: 8px;
+  padding: 9px 20px; font-size: 13px; font-weight: 600;
+  font-family: var(--font); cursor: pointer;
+}
+.cookie-btn-decline {
+  background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+  padding: 9px 16px; font-size: 13px; font-family: var(--font); cursor: pointer;
+}
+
+/* ===== SEARCHABLE CURRENCY DROPDOWN ===== */
+.curr-select-wrap {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.curr-select-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  width: 100%;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  text-align: left;
+  justify-content: space-between;
+}
+.curr-select-btn:hover, .curr-select-btn.open { border-color: var(--green); background:#fff; }
+.curr-select-btn .csd-arrow { color: var(--text3); font-size: 10px; transition: transform 0.2s; }
+.curr-select-btn.open .csd-arrow { transform: rotate(180deg); }
+.curr-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  min-width: 280px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.14);
+  z-index: 9999;
+  display: none;
+  overflow: hidden;
+}
+.curr-dropdown.open { display: block; }
+.curr-dropdown-search {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  background: var(--bg2);
+}
+.curr-dropdown-search input {
+  flex: 1;
+  font-family: var(--font);
+  font-size: 13px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+}
+.curr-dropdown-search input::placeholder { color: var(--text3); }
+.curr-dropdown-search .cds-icon { color: var(--text3); font-size: 14px; }
+.curr-list {
+  max-height: 240px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+.curr-list::-webkit-scrollbar { width: 4px; }
+.curr-list::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+.curr-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.curr-list-item:hover { background: var(--green-bg); }
+.curr-list-item.selected { background: var(--green-bg); color: var(--green-dark); font-weight: 600; }
+.curr-list-item .cli-flag { font-size: 16px; flex-shrink: 0; }
+.curr-list-item .cli-code { font-family: var(--mono); font-weight: 600; min-width: 42px; }
+.curr-list-item .cli-name { color: var(--text2); font-size: 12px; flex: 1; }
+.curr-no-results { padding: 20px; text-align: center; color: var(--text3); font-size: 13px; }
+
+/* ===== TRENDING SEARCHES SECTION ===== */
+.trending-section {
+  background: linear-gradient(135deg, #0d1f1a 0%, #0a2e22 50%, #062018 100%);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(29,158,117,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.trending-section::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(29,158,117,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.trending-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #4EEAB0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.trending-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.trending-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(29,158,117,0.15);
+  border: 1px solid rgba(29,158,117,0.3);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12.5px;
+  color: #cffaec;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.trending-chip:hover {
+  background: rgba(29,158,117,0.35);
+  border-color: var(--green);
+  color: #fff;
+  transform: translateY(-1px);
+}
+.trending-chip .tc-icon { font-size: 14px; }
+.trending-chip .tc-fire { color: #ff7b47; }
+
+/* ===== LANGUAGE NOTICE ===== */
+#langNotice {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  z-index: 500;
+  background: var(--green);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(29,158,117,0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 320px;
+  animation: slideIn 0.4s ease;
+  cursor: pointer;
+}
+#langNotice:hover { background: var(--green-dark); }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+#langNotice .ln-close {
+  margin-left: auto;
+  opacity: 0.7;
+  font-size: 16px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .calc-grid { grid-template-columns: 1fr; }
+  .bvr-results { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 28px; }
+  .mrc-big { font-size: 36px; }
+  .main-rate-card { flex-direction: column; align-items: flex-start; }
+  .mrc-right { align-items: flex-start; }
+}
+  </style>
+</head>
+<body>
+
+<!-- FLOATING COINS CANVAS -->
+<canvas id="coins-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="logo">Finance<span>Hub</span></div>
+    <div class="nav-links">
+      <a href="#divisas">💱 Divisas</a>
+      <a href="#conversion">🔄 Conversor</a>
+      <a href="#interes">📈 Interés</a>
+      <a href="#retiro">🏖️ Retiro</a>
+      <a href="#prestamo">🏠 Préstamo</a>
+      <a href="#herramientas">🧰 Más</a>
+      <a href="#glosario">📚 Glosario</a>
+      <a href="#pro-tools">🇺🇸 Pro USA</a>
+      <a href="#brokers">📊 Brokers</a>
+    </div>
+    <button class="nav-cta" onclick="openModal('supportModal')">💬 Soporte</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="live-dot"></span>
+      <span id="apiStatusBadge">✅ Tasas reales · Sin registro</span>
+    </div>
+    <h1>Herramientas financieras<br /><em>para todo el mundo</em></h1>
+    <p>Conversores de divisas en tiempo real, calculadoras financieras, glosario,<br/>comparador de brokers y más. Todo gratis. Sin registro.</p>
+    <div class="hero-stats">
+      <div class="hs"><span class="hs-num">160+</span><span class="hs-label">Monedas</span></div>
+      <div class="hs"><span class="hs-num">12</span><span class="hs-label">Calculadoras</span></div>
+      <div class="hs"><span class="hs-num">60s</span><span class="hs-label">Actualización</span></div>
+      <div class="hs"><span class="hs-num">200+</span><span class="hs-label">Términos</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<!-- AD SLOT 1: Banner horizontal debajo del ticker (728x90 o responsive) -->
+<!-- Descomenta y reemplaza con tu ad unit real cuando AdSense esté aprobado -->
+<!--
+<div style="display:flex;justify-content:center;padding:12px 0;background:var(--bg)">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+-->
+
+<main class="main-content">
+
+
+
+  <!-- DIVISAS EN VIVO -->
+  <section class="section" id="divisas">
+    <div class="section-header">
+      <div>
+        <h2>Divisas en tiempo real</h2>
+        <p class="section-desc">Tasas de cambio actualizadas automáticamente en tiempo real · 160+ monedas</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="live-indicator"><span class="live-dot"></span><span id="lastUpdate">Cargando...</span></div>
+        <span class="api-status real" id="apiStatusLabel">● Tasas Reales</span>
+      </div>
+    </div>
+
+    <div class="controls-bar">
+      <div class="control-group">
+        <label>Moneda base</label>
+        <select id="baseCurr" onchange="changeBase()">
+          <option value="USD">🇺🇸 USD — Dólar USA</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="GBP">🇬🇧 GBP — Libra esterlina</option>
+          <option value="JPY">🇯🇵 JPY — Yen japonés</option>
+          <option value="PEN">🇵🇪 PEN — Sol peruano</option>
+          <option value="MXN">🇲🇽 MXN — Peso mexicano</option>
+          <option value="CAD">🇨🇦 CAD — Dólar canadiense</option>
+          <option value="AUD">🇦🇺 AUD — Dólar australiano</option>
+          <option value="BRL">🇧🇷 BRL — Real brasileño</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Período del gráfico</label>
+        <select id="periodSel" onchange="changePeriod()">
+          <option value="30">30 seg</option>
+          <option value="60" selected>1 min</option>
+          <option value="180">3 min</option>
+          <option value="300">5 min</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="main-rate-card">
+      <div class="mrc-left">
+        <div class="mrc-label" id="mainLabel">USD → EUR</div>
+        <div class="mrc-big" id="mainRate">—</div>
+        <div class="mrc-sub" id="mainSub">Cargando...</div>
+      </div>
+      <div class="mrc-right">
+        <span class="badge-chg" id="mainBadge">—</span>
+        <div class="mrc-range" id="mainRange">Rango: —</div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-header">
+        <span id="chartTitle">Gráfico en tiempo real</span>
+        <span class="chart-pts" id="chartPts">— puntos</span>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="liveChart"></canvas>
+      </div>
+    </div>
+
+    <div class="currency-grid" id="currGrid"></div>
+  </section>
+
+  <!-- TRENDING SEARCHES (Lo más buscado en EEUU) -->
+  <section class="section" id="trending">
+    <div class="trending-section">
+      <div class="trending-title">🔥 <span id="trendingTitle">Most searched in the US · Currency Exchange</span></div>
+      <div class="trending-chips" id="trendingChips">
+        <span class="trending-chip" onclick="applyTrend('USD','MXN',1000)"><span class="tc-icon">🇲🇽</span> USD to MXN</span>
+        <span class="trending-chip" onclick="applyTrend('USD','EUR',1000)"><span class="tc-icon">🇪🇺</span> USD to EUR</span>
+        <span class="trending-chip" onclick="applyTrend('USD','COP',1000)"><span class="tc-icon">🇨🇴</span> USD to Colombian Peso</span>
+        <span class="trending-chip" onclick="applyTrend('USD','CAD',1000)"><span class="tc-icon">🇨🇦</span> USD to CAD</span>
+        <span class="trending-chip" onclick="applyTrend('USD','GBP',1000)"><span class="tc-icon">🇬🇧</span> USD to British Pound</span>
+        <span class="trending-chip" onclick="applyTrend('USD','INR',1000)"><span class="tc-icon">🇮🇳</span> Dollar to Rupee</span>
+        <span class="trending-chip" onclick="applyTrend('USD','PHP',1000)"><span class="tc-icon">🇵🇭</span> USD to Philippine Peso</span>
+        <span class="trending-chip" onclick="applyTrend('USD','JPY',1000)"><span class="tc-icon">🇯🇵</span> Dollar to Yen</span>
+        <span class="trending-chip" onclick="applyTrend('MXN','USD',10000)"><span class="tc-icon">🔄</span> MXN to USD</span>
+        <span class="trending-chip" onclick="applyTrend('EUR','USD',1000)"><span class="tc-icon">🔄</span> EUR to USD</span>
+        <span class="trending-chip" onclick="applyTrend('USD','BRL',1000)"><span class="tc-icon">🇧🇷</span> USD to Real</span>
+        <span class="trending-chip" onclick="applyTrend('USD','DOP',1000)"><span class="tc-icon">🇩🇴</span> USD to Dominican Peso</span>
+        <span class="trending-chip" onclick="applyTrend('USD','GTQ',1000)"><span class="tc-icon">🇬🇹</span> USD to Guatemalan Quetzal</span>
+        <span class="trending-chip" onclick="applyTrend('USD','HNL',1000)"><span class="tc-icon">🇭🇳</span> USD to Honduran Lempira</span>
+        <span class="trending-chip" onclick="applyTrend('USD','CNY',1000)"><span class="tc-icon">🇨🇳</span> Dollar to Yuan</span>
+        <span class="trending-chip" onclick="applyTrend('USD','CHF',1000)"><span class="tc-icon">🇨🇭</span> USD to Swiss Franc</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONVERSOR -->
+  <section class="section" id="conversion">
+    <div class="section-header">
+      <div>
+        <h2>Conversor de divisas</h2>
+        <p class="section-desc">Convierte entre más de 160 monedas con tasas en vivo</p>
+      </div>
+    </div>
+    <div class="converter-card">
+      <div class="converter-row">
+        <div class="conv-field">
+          <label id="lbl-amount">Amount</label>
+          <input type="number" id="cvAmt" value="1000" oninput="doConvert()" placeholder="0.00" />
+        </div>
+        <div class="conv-field">
+          <label id="lbl-from">From</label>
+          <div class="curr-select-wrap" id="wrap-cvFrom">
+            <button class="curr-select-btn" id="btn-cvFrom" onclick="toggleDropdown('cvFrom')" type="button">
+              <span id="display-cvFrom">🇺🇸 USD — US Dollar</span>
+              <span class="csd-arrow">▼</span>
+            </button>
+            <div class="curr-dropdown" id="drop-cvFrom">
+              <div class="curr-dropdown-search">
+                <span class="cds-icon">🔍</span>
+                <input type="text" id="search-cvFrom" placeholder="Search currency..." oninput="filterDropdown('cvFrom',this.value)" autocomplete="off" />
+              </div>
+              <div class="curr-list" id="list-cvFrom"></div>
+            </div>
+          </div>
+          <select id="cvFrom" onchange="doConvert()" style="display:none"></select>
+        </div>
+        <button class="swap-btn" onclick="swapConvert()" title="Swap">⇄</button>
+        <div class="conv-field">
+          <label id="lbl-to">To</label>
+          <div class="curr-select-wrap" id="wrap-cvTo">
+            <button class="curr-select-btn" id="btn-cvTo" onclick="toggleDropdown('cvTo')" type="button">
+              <span id="display-cvTo">🇪🇺 EUR — Euro</span>
+              <span class="csd-arrow">▼</span>
+            </button>
+            <div class="curr-dropdown" id="drop-cvTo">
+              <div class="curr-dropdown-search">
+                <span class="cds-icon">🔍</span>
+                <input type="text" id="search-cvTo" placeholder="Search currency..." oninput="filterDropdown('cvTo',this.value)" autocomplete="off" />
+              </div>
+              <div class="curr-list" id="list-cvTo"></div>
+            </div>
+          </div>
+          <select id="cvTo" onchange="doConvert()" style="display:none"></select>
+        </div>
+      </div>
+      <div class="conv-result" id="convResult">
+        <div class="cr-main" id="crMain">—</div>
+        <div class="cr-rate" id="crRate">Tasa: —</div>
+      </div>
+      <div class="conv-quick">
+        <span class="cq-label">Rápido:</span>
+        <button onclick="quickConv(100)">$100</button>
+        <button onclick="quickConv(500)">$500</button>
+        <button onclick="quickConv(1000)">$1,000</button>
+        <button onclick="quickConv(5000)">$5,000</button>
+        <button onclick="quickConv(10000)">$10,000</button>
+        <button onclick="quickConv(50000)">$50,000</button>
+      </div>
+      <div class="conv-table" id="convTable"></div>
+    </div>
+  </section>
+
+  <!-- INTERÉS COMPUESTO -->
+  <section class="section" id="interes">
+    <div class="section-header">
+      <h2>Calculadora de interés compuesto</h2>
+      <p class="section-desc">El poder del interés compuesto a lo largo del tiempo</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-grid">
+        <div class="field-group">
+          <label>Capital inicial (USD)</label>
+          <input type="number" id="ci_principal" value="10000" oninput="calcCompound()" />
+        </div>
+        <div class="field-group">
+          <label>Aporte mensual (USD)</label>
+          <input type="number" id="ci_monthly" value="300" oninput="calcCompound()" />
+        </div>
+        <div class="field-group full">
+          <label>Tasa de interés anual: <strong id="ci_rate_lbl">7%</strong></label>
+          <input type="range" min="1" max="20" step="0.5" value="7" id="ci_rate"
+            oninput="document.getElementById('ci_rate_lbl').textContent=this.value+'%';calcCompound()" />
+        </div>
+        <div class="field-group full">
+          <label>Años de inversión: <strong id="ci_years_lbl">20 años</strong></label>
+          <input type="range" min="1" max="50" value="20" id="ci_years"
+            oninput="document.getElementById('ci_years_lbl').textContent=this.value+' años';calcCompound()" />
+        </div>
+      </div>
+      <div class="metrics-row" id="ciMetrics">
+        <div class="metric"><div class="m-label">Valor final</div><div class="m-val" id="ci_final">—</div></div>
+        <div class="metric"><div class="m-label">Total aportado</div><div class="m-val" id="ci_invested">—</div></div>
+        <div class="metric"><div class="m-label">Ganancias</div><div class="m-val green" id="ci_gain">—</div></div>
+        <div class="metric"><div class="m-label">Multiplicador</div><div class="m-val" id="ci_mult">—</div></div>
+      </div>
+      <div class="chart-wrap tall"><canvas id="compChart"></canvas></div>
+      <div class="chart-legend">
+        <span><span class="leg-dot green"></span>Valor total</span>
+        <span><span class="leg-dot gray"></span>Capital aportado</span>
+        <span><span class="leg-dot teal"></span>Ganancias</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RETIRO -->
+  <section class="section" id="retiro">
+    <div class="section-header">
+      <h2>Calculadora de retiro / jubilación</h2>
+      <p class="section-desc">¿Cuánto necesitas para retirarte cómodamente?</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-grid">
+        <div class="field-group">
+          <label>Edad actual</label>
+          <input type="number" id="r_age" value="30" oninput="calcRetire()" min="18" max="80" />
+        </div>
+        <div class="field-group">
+          <label>Edad de retiro</label>
+          <input type="number" id="r_retire_age" value="65" oninput="calcRetire()" min="30" max="90" />
+        </div>
+        <div class="field-group">
+          <label>Gastos mensuales en retiro (USD)</label>
+          <input type="number" id="r_expenses" value="3000" oninput="calcRetire()" />
+        </div>
+        <div class="field-group">
+          <label>Ahorros actuales (USD)</label>
+          <input type="number" id="r_savings" value="15000" oninput="calcRetire()" />
+        </div>
+        <div class="field-group full">
+          <label>Retorno anual esperado: <strong id="r_rate_lbl">7%</strong></label>
+          <input type="range" min="1" max="15" value="7" id="r_rate"
+            oninput="document.getElementById('r_rate_lbl').textContent=this.value+'%';calcRetire()" />
+        </div>
+        <div class="field-group full">
+          <label>Años en retiro (esperanza de vida): <strong id="r_life_lbl">25 años</strong></label>
+          <input type="range" min="10" max="40" value="25" id="r_life"
+            oninput="document.getElementById('r_life_lbl').textContent=this.value+' años';calcRetire()" />
+        </div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric"><div class="m-label">Meta (Regla 4%)</div><div class="m-val" id="r_goal">—</div></div>
+        <div class="metric"><div class="m-label">Ahorro mensual</div><div class="m-val" id="r_monthly">—</div></div>
+        <div class="metric"><div class="m-label">Años restantes</div><div class="m-val" id="r_years">—</div></div>
+        <div class="metric"><div class="m-label">Ingreso pasivo/mes</div><div class="m-val green" id="r_passive">—</div></div>
+      </div>
+      <div class="result-banner" id="retireBanner">
+        <div class="rb-label">Con tu plan actual, puedes retirarte a los:</div>
+        <div class="rb-val" id="retireAge">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRÉSTAMO -->
+  <section class="section" id="prestamo">
+    <div class="section-header">
+      <h2>Calculadora de préstamo / hipoteca</h2>
+      <p class="section-desc">Cuota mensual, amortización y total de intereses</p>
+    </div>
+    <div class="calc-card">
+      <div class="calc-grid">
+        <div class="field-group">
+          <label>Monto del préstamo (USD)</label>
+          <input type="number" id="l_amount" value="25000" oninput="calcLoan()" />
+        </div>
+        <div class="field-group">
+          <label>Plazo (años)</label>
+          <input type="number" id="l_years" value="5" oninput="calcLoan()" min="1" max="30" />
+        </div>
+        <div class="field-group full">
+          <label>Tasa de interés anual: <strong id="l_rate_lbl">8%</strong></label>
+          <input type="range" min="1" max="30" value="8" id="l_rate"
+            oninput="document.getElementById('l_rate_lbl').textContent=this.value+'%';calcLoan()" />
+        </div>
+      </div>
+      <div class="metrics-row">
+        <div class="metric"><div class="m-label">Cuota mensual</div><div class="m-val" id="l_monthly">—</div></div>
+        <div class="metric"><div class="m-label">Total a pagar</div><div class="m-val" id="l_total">—</div></div>
+        <div class="metric"><div class="m-label">Total intereses</div><div class="m-val red" id="l_interest">—</div></div>
+        <div class="metric"><div class="m-label">% sobre capital</div><div class="m-val" id="l_pct">—</div></div>
+      </div>
+      <div class="loan-charts">
+        <div class="chart-wrap medium"><canvas id="loanDonut"></canvas></div>
+        <div class="chart-wrap medium"><canvas id="loanBar"></canvas></div>
+      </div>
+      <div class="chart-legend">
+        <span><span class="leg-dot green"></span>Capital</span>
+        <span><span class="leg-dot red"></span>Intereses</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MÁS HERRAMIENTAS -->
+  <section class="section" id="herramientas">
+    <div class="section-header">
+      <h2>Más herramientas financieras</h2>
+      <p class="section-desc">Calculadoras avanzadas para decisiones financieras reales</p>
+    </div>
+    <div class="section-tabs">
+      <button class="tab-btn active" onclick="showTab('tab-inflation', this)">📉 Inflación</button>
+      <button class="tab-btn" onclick="showTab('tab-millionaire', this)">💰 ¿Cuándo seré millonario?</button>
+      <button class="tab-btn" onclick="showTab('tab-dividend', this)">💵 Dividendos</button>
+      <button class="tab-btn" onclick="showTab('tab-buyvrent', this)">🏠 Comprar vs Alquilar</button>
+      <button class="tab-btn" onclick="showTab('tab-fire', this)">🔥 FIRE Calculator</button>
+      <button class="tab-btn" onclick="showTab('tab-salary', this)">💼 Neto del salario USA</button>
+    </div>
+
+    <!-- TAB: INFLACIÓN -->
+    <div class="tab-panel active" id="tab-inflation">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Monto original (USD)</label>
+            <input type="number" id="inf_amount" value="1000" oninput="calcInflation()" />
+          </div>
+          <div class="field-group">
+            <label>Año de inicio</label>
+            <input type="number" id="inf_from" value="2000" min="1913" max="2024" oninput="calcInflation()" />
+          </div>
+          <div class="field-group">
+            <label>Año final</label>
+            <input type="number" id="inf_to" value="2024" min="1913" max="2025" oninput="calcInflation()" />
+          </div>
+          <div class="field-group">
+            <label>Tasa de inflación anual (%)</label>
+            <input type="number" id="inf_rate" value="3.1" step="0.1" oninput="calcInflation()" />
+          </div>
+        </div>
+        <div class="infl-result" id="inflResult">
+          <div class="infl-box">
+            <div class="infl-label">Valor original</div>
+            <div class="infl-val" id="inf_original">$1,000</div>
+          </div>
+          <div class="infl-arrow">→</div>
+          <div class="infl-box">
+            <div class="infl-label">Valor equivalente hoy</div>
+            <div class="infl-val green" id="inf_today">—</div>
+          </div>
+          <div class="infl-box">
+            <div class="infl-label">Pérdida de poder adquisitivo</div>
+            <div class="infl-val red" id="inf_loss">—</div>
+          </div>
+          <div class="infl-box">
+            <div class="infl-label">Inflación acumulada</div>
+            <div class="infl-val" id="inf_total_pct">—</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:16px">💡 La tasa de inflación promedio en EE.UU. ha sido ~3.1% anual desde 1913. En Latinoamérica varía mucho por país.</p>
+      </div>
+    </div>
+
+    <!-- TAB: MILLIONARIO -->
+    <div class="tab-panel" id="tab-millionaire">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Ahorros actuales (USD)</label>
+            <input type="number" id="m_current" value="5000" oninput="calcMillionaire()" />
+          </div>
+          <div class="field-group">
+            <label>Ahorro mensual (USD)</label>
+            <input type="number" id="m_monthly" value="500" oninput="calcMillionaire()" />
+          </div>
+          <div class="field-group full">
+            <label>Retorno anual esperado: <strong id="m_rate_lbl">8%</strong></label>
+            <input type="range" min="1" max="20" value="8" id="m_rate"
+              oninput="document.getElementById('m_rate_lbl').textContent=this.value+'%';calcMillionaire()" />
+          </div>
+          <div class="field-group full">
+            <label>Meta (USD): <strong id="m_goal_lbl">$1,000,000</strong></label>
+            <input type="range" min="100000" max="10000000" step="100000" value="1000000" id="m_goal"
+              oninput="document.getElementById('m_goal_lbl').textContent='$'+parseInt(this.value).toLocaleString();calcMillionaire()" />
+          </div>
+        </div>
+        <div class="mill-result-banner" id="millResult">
+          <div class="mill-banner-label">Llegarás a tu meta en</div>
+          <div class="mill-banner-val" id="m_years_result">— años</div>
+          <div class="mill-banner-sub" id="m_date_result">Calculando...</div>
+        </div>
+        <div class="metrics-row" style="margin-top:16px">
+          <div class="metric"><div class="m-label">Total aportado</div><div class="m-val" id="m_invested">—</div></div>
+          <div class="metric"><div class="m-label">Ganancias por interés</div><div class="m-val green" id="m_gains">—</div></div>
+          <div class="metric"><div class="m-label">% que aportan los intereses</div><div class="m-val" id="m_interest_pct">—</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: DIVIDENDOS -->
+    <div class="tab-panel" id="tab-dividend">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Capital a invertir (USD)</label>
+            <input type="number" id="dv_capital" value="50000" oninput="calcDividend()" />
+          </div>
+          <div class="field-group">
+            <label>Dividend yield anual (%)</label>
+            <input type="number" id="dv_yield" value="4" step="0.1" oninput="calcDividend()" />
+          </div>
+          <div class="field-group">
+            <label>Crecimiento del dividendo (% anual)</label>
+            <input type="number" id="dv_growth" value="5" step="0.5" oninput="calcDividend()" />
+          </div>
+          <div class="field-group">
+            <label>Años de inversión</label>
+            <input type="number" id="dv_years" value="20" min="1" max="50" oninput="calcDividend()" />
+          </div>
+        </div>
+        <div class="div-results" id="divResults">
+          <div class="metric"><div class="m-label">Ingreso anual (hoy)</div><div class="m-val" id="dv_annual">—</div></div>
+          <div class="metric"><div class="m-label">Ingreso mensual (hoy)</div><div class="m-val green" id="dv_monthly">—</div></div>
+          <div class="metric"><div class="m-label">Ingreso anual (año N)</div><div class="m-val" id="dv_future">—</div></div>
+          <div class="metric"><div class="m-label">Total dividendos cobrados</div><div class="m-val" id="dv_total">—</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 Ejemplos: VYM ~3.5%, SCHD ~3.8%, O (Realty Income) ~5.5%, AT&T ~6.5%. Investiga cada acción antes de invertir.</p>
+      </div>
+    </div>
+
+    <!-- TAB: COMPRAR vs ALQUILAR -->
+    <div class="tab-panel" id="tab-buyvrent">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Precio de la propiedad (USD)</label>
+            <input type="number" id="bvr_price" value="300000" oninput="calcBuyVsRent()" />
+          </div>
+          <div class="field-group">
+            <label>Enganche / entrada (%)</label>
+            <input type="number" id="bvr_down" value="20" min="3" max="100" oninput="calcBuyVsRent()" />
+          </div>
+          <div class="field-group">
+            <label>Renta mensual equivalente (USD)</label>
+            <input type="number" id="bvr_rent" value="1800" oninput="calcBuyVsRent()" />
+          </div>
+          <div class="field-group">
+            <label>Años de análisis</label>
+            <input type="number" id="bvr_years" value="10" min="1" max="40" oninput="calcBuyVsRent()" />
+          </div>
+          <div class="field-group">
+            <label>Tasa hipotecaria (%)</label>
+            <input type="number" id="bvr_mortgage" value="7" step="0.1" oninput="calcBuyVsRent()" />
+          </div>
+          <div class="field-group">
+            <label>Apreciación anual propiedad (%)</label>
+            <input type="number" id="bvr_apprec" value="3.5" step="0.1" oninput="calcBuyVsRent()" />
+          </div>
+        </div>
+        <div class="bvr-results" id="bvrResults">
+          <div class="bvr-card buy">
+            <div class="bvr-title">🏠 Comprar</div>
+            <div id="bvr_buy_details"></div>
+          </div>
+          <div class="bvr-card rent">
+            <div class="bvr-title">🏢 Alquilar</div>
+            <div id="bvr_rent_details"></div>
+          </div>
+        </div>
+        <div class="bvr-winner" id="bvrWinner"></div>
+      </div>
+    </div>
+
+    <!-- TAB: FIRE CALCULATOR -->
+    <div class="tab-panel" id="tab-fire">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Gastos anuales actuales (USD)</label>
+            <input type="number" id="fire_expenses" value="40000" oninput="calcFIRE()" />
+          </div>
+          <div class="field-group">
+            <label>Ahorros actuales (USD)</label>
+            <input type="number" id="fire_savings" value="50000" oninput="calcFIRE()" />
+          </div>
+          <div class="field-group">
+            <label>Tasa de ahorro (% de ingresos)</label>
+            <input type="number" id="fire_save_rate" value="40" min="1" max="90" oninput="calcFIRE()" />
+          </div>
+          <div class="field-group">
+            <label>Ingreso anual bruto (USD)</label>
+            <input type="number" id="fire_income" value="80000" oninput="calcFIRE()" />
+          </div>
+        </div>
+        <div class="mill-result-banner" id="fireResult">
+          <div class="mill-banner-label">🔥 Tu número FIRE (regla del 4%)</div>
+          <div class="mill-banner-val" id="fire_number">—</div>
+          <div class="mill-banner-sub" id="fire_years">Calculando...</div>
+        </div>
+        <div class="metrics-row" style="margin-top:16px">
+          <div class="metric"><div class="m-label">Ahorro anual</div><div class="m-val" id="fire_annual_save">—</div></div>
+          <div class="metric"><div class="m-label">Tasa de retiro segura</div><div class="m-val green">4%</div></div>
+          <div class="metric"><div class="m-label">Ingreso en retiro/mes</div><div class="m-val" id="fire_monthly_income">—</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 FIRE = Financial Independence, Retire Early. Basado en el estudio Trinity (1998). Tasa de retiro del 4% históricamente sustentable por 30+ años.</p>
+      </div>
+    </div>
+
+    <!-- TAB: SALARIO NETO USA -->
+    <div class="tab-panel" id="tab-salary">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Salario bruto anual (USD)</label>
+            <input type="number" id="sal_gross" value="75000" oninput="calcSalaryUSA()" />
+          </div>
+          <div class="field-group">
+            <label>Estado</label>
+            <select id="sal_state" onchange="calcSalaryUSA()">
+              <option value="0">Sin impuesto estatal (TX, FL, NV...)</option>
+              <option value="5.0">Promedio ~5% (OH, VA, NC...)</option>
+              <option value="9.3" selected>California (~9.3%)</option>
+              <option value="8.8">New York (~8.8%)</option>
+              <option value="5.75">Georgia (~5.75%)</option>
+              <option value="5.0">Colorado (~5%)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Estado civil</label>
+            <select id="sal_filing" onchange="calcSalaryUSA()">
+              <option value="single">Soltero/a</option>
+              <option value="married">Casado/a (joint)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Aporte 401(k) anual (USD)</label>
+            <input type="number" id="sal_401k" value="6000" oninput="calcSalaryUSA()" />
+          </div>
+        </div>
+        <div class="metrics-row" id="salResults">
+          <div class="metric"><div class="m-label">Ingreso federal bruto</div><div class="m-val" id="sal_gross_out">—</div></div>
+          <div class="metric"><div class="m-label">Imp. Federal</div><div class="m-val red" id="sal_federal">—</div></div>
+          <div class="metric"><div class="m-label">Social Security + Medicare</div><div class="m-val red" id="sal_fica">—</div></div>
+          <div class="metric"><div class="m-label">Imp. Estatal</div><div class="m-val red" id="sal_state_tax">—</div></div>
+          <div class="metric"><div class="m-label">Neto anual</div><div class="m-val green" id="sal_net">—</div></div>
+          <div class="metric"><div class="m-label">Neto mensual</div><div class="m-val green" id="sal_net_monthly">—</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">⚠️ Estimación aproximada. Consulta a un CPA para tu situación específica. No incluye deducciones adicionales.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HERRAMIENTAS PROFESIONALES USA -->
+  <section class="section" id="pro-tools">
+    <div class="section-header">
+      <div>
+        <h2>🇺🇸 Herramientas para profesionales en EE.UU.</h2>
+        <p class="section-desc">Calculadoras esenciales para trabajadores y residentes en Estados Unidos</p>
+      </div>
+    </div>
+    <div class="section-tabs">
+      <button class="tab-btn active" onclick="showProTab('tab-networth', this)">💎 Patrimonio Neto</button>
+      <button class="tab-btn" onclick="showProTab('tab-budget', this)">📊 Presupuesto 50/30/20</button>
+      <button class="tab-btn" onclick="showProTab('tab-debt', this)">💳 Pago de Deudas</button>
+      <button class="tab-btn" onclick="showProTab('tab-401k', this)">🏦 Maximizar 401(k)</button>
+    </div>
+
+    <!-- TAB: NET WORTH -->
+    <div class="tab-panel active" id="tab-networth">
+      <div class="calc-card">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:16px">Ingresa tus activos y pasivos para calcular tu patrimonio neto real.</p>
+        <div class="nw-cat-label">💰 Activos (lo que tienes)</div>
+        <div id="nw-assets-list">
+          <div class="nw-row">
+            <input type="text" placeholder="Ej: Cuenta bancaria" value="Cuenta bancaria" oninput="calcNetWorth()" />
+            <input type="number" placeholder="Valor USD" value="15000" oninput="calcNetWorth()" class="nw-val" />
+            <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>
+          </div>
+          <div class="nw-row">
+            <input type="text" placeholder="Ej: 401(k) / IRA" value="401(k) / IRA" oninput="calcNetWorth()" />
+            <input type="number" placeholder="Valor USD" value="45000" oninput="calcNetWorth()" class="nw-val" />
+            <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>
+          </div>
+          <div class="nw-row">
+            <input type="text" placeholder="Ej: Casa / propiedad" value="Casa / propiedad" oninput="calcNetWorth()" />
+            <input type="number" placeholder="Valor USD" value="280000" oninput="calcNetWorth()" class="nw-val" />
+            <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>
+          </div>
+        </div>
+        <button class="nw-add-btn" onclick="addNwRow('nw-assets-list')">+ Agregar activo</button>
+
+        <div class="nw-cat-label" style="margin-top:24px">📉 Pasivos (lo que debes)</div>
+        <div id="nw-debts-list">
+          <div class="nw-row">
+            <input type="text" placeholder="Ej: Hipoteca" value="Hipoteca" oninput="calcNetWorth()" />
+            <input type="number" placeholder="Valor USD" value="210000" oninput="calcNetWorth()" class="nw-val" />
+            <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>
+          </div>
+          <div class="nw-row">
+            <input type="text" placeholder="Ej: Préstamo auto" value="Préstamo auto" oninput="calcNetWorth()" />
+            <input type="number" placeholder="Valor USD" value="12000" oninput="calcNetWorth()" class="nw-val" />
+            <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>
+          </div>
+        </div>
+        <button class="nw-add-btn" onclick="addNwRow('nw-debts-list')" style="background:var(--red-bg);color:var(--red);border-color:var(--red-border)">+ Agregar deuda</button>
+
+        <div class="metrics-row" style="margin-top:24px">
+          <div class="metric"><div class="m-label">Total Activos</div><div class="m-val green" id="nw-total-assets">—</div></div>
+          <div class="metric"><div class="m-label">Total Pasivos</div><div class="m-val red" id="nw-total-debts">—</div></div>
+          <div class="metric"><div class="m-label">Patrimonio Neto</div><div class="m-val" id="nw-total-net" style="font-size:24px">—</div></div>
+        </div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 El patrimonio neto promedio en EE.UU. para menores de 35 años es ~$76,000. Para 35-44 años: ~$436,000.</p>
+      </div>
+    </div>
+
+    <!-- TAB: PRESUPUESTO 50/30/20 -->
+    <div class="tab-panel" id="tab-budget">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Salario neto mensual (USD)</label>
+            <input type="number" id="bg_income" value="4500" oninput="calcBudget()" />
+          </div>
+          <div class="field-group">
+            <label>Gastos fijos actuales (USD/mes)</label>
+            <input type="number" id="bg_fixed" value="2100" oninput="calcBudget()" />
+          </div>
+          <div class="field-group">
+            <label>Gastos variables actuales (USD/mes)</label>
+            <input type="number" id="bg_variable" value="900" oninput="calcBudget()" />
+          </div>
+          <div class="field-group">
+            <label>Ahorro/inversión actual (USD/mes)</label>
+            <input type="number" id="bg_savings" value="500" oninput="calcBudget()" />
+          </div>
+        </div>
+        <div class="metrics-row" id="bgResults">
+          <div class="metric"><div class="m-label">50% Necesidades</div><div class="m-val" id="bg_needs">—</div></div>
+          <div class="metric"><div class="m-label">30% Deseos</div><div class="m-val" id="bg_wants">—</div></div>
+          <div class="metric"><div class="m-label">20% Ahorro</div><div class="m-val green" id="bg_save_ideal">—</div></div>
+          <div class="metric"><div class="m-label">Tu ahorro actual</div><div class="m-val" id="bg_save_actual">—</div></div>
+          <div class="metric"><div class="m-label">Diferencia</div><div class="m-val" id="bg_diff">—</div></div>
+        </div>
+        <div id="bg_advice" style="margin-top:16px;padding:14px;border-radius:8px;font-size:13px;line-height:1.6"></div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 Regla 50/30/20: 50% en necesidades (renta, comida, transporte), 30% en gustos, 20% en ahorro e inversión.</p>
+      </div>
+    </div>
+
+    <!-- TAB: PAGO DE DEUDAS -->
+    <div class="tab-panel" id="tab-debt">
+      <div class="calc-card">
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+          <button class="method-tab active" id="method-avalanche" onclick="setDebtMethod('avalanche')">⚡ Avalanche (menos intereses)</button>
+          <button class="method-tab" id="method-snowball" onclick="setDebtMethod('snowball')">❄️ Snowball (más motivación)</button>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:8px;margin-bottom:6px">
+          <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase">Deuda</span>
+          <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase">Saldo USD</span>
+          <span style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase">APR %</span>
+          <span></span>
+        </div>
+        <div id="debt-list">
+          <div class="nw-row">
+            <input type="text" value="Tarjeta Visa" oninput="calcDebt()" />
+            <input type="number" value="4500" oninput="calcDebt()" class="debt-bal" />
+            <input type="number" value="24.99" step="0.01" oninput="calcDebt()" class="debt-apr" />
+            <button class="nw-del-btn" onclick="removeNwRow(this);calcDebt()">✕</button>
+          </div>
+          <div class="nw-row">
+            <input type="text" value="Préstamo estudiantil" oninput="calcDebt()" />
+            <input type="number" value="18000" oninput="calcDebt()" class="debt-bal" />
+            <input type="number" value="6.5" step="0.01" oninput="calcDebt()" class="debt-apr" />
+            <button class="nw-del-btn" onclick="removeNwRow(this);calcDebt()">✕</button>
+          </div>
+          <div class="nw-row">
+            <input type="text" value="Auto loan" oninput="calcDebt()" />
+            <input type="number" value="9200" oninput="calcDebt()" class="debt-bal" />
+            <input type="number" value="8.9" step="0.01" oninput="calcDebt()" class="debt-apr" />
+            <button class="nw-del-btn" onclick="removeNwRow(this);calcDebt()">✕</button>
+          </div>
+        </div>
+        <button class="nw-add-btn" onclick="addDebtRow()">+ Agregar deuda</button>
+        <div class="field-group" style="margin-top:16px;max-width:280px">
+          <label>Pago mensual extra disponible (USD)</label>
+          <input type="number" id="debt_extra" value="300" oninput="calcDebt()" />
+        </div>
+        <div class="metrics-row" style="margin-top:16px">
+          <div class="metric"><div class="m-label">Deuda total</div><div class="m-val red" id="debt_total">—</div></div>
+          <div class="metric"><div class="m-label">Interés total ahorrado</div><div class="m-val green" id="debt_saved">—</div></div>
+          <div class="metric"><div class="m-label">Libre de deudas en</div><div class="m-val" id="debt_months">—</div></div>
+        </div>
+        <div id="debt_order" style="margin-top:16px;font-size:13px;color:var(--text2);line-height:1.8"></div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 <strong>Avalanche</strong>: paga primero la deuda con mayor APR (ahorra más dinero). <strong>Snowball</strong>: paga primero la deuda más pequeña (más motivador).</p>
+      </div>
+    </div>
+
+    <!-- TAB: 401k MAXIMIZER -->
+    <div class="tab-panel" id="tab-401k">
+      <div class="calc-card">
+        <div class="calc-grid">
+          <div class="field-group">
+            <label>Salario bruto anual (USD)</label>
+            <input type="number" id="k_salary" value="85000" oninput="calc401k()" />
+          </div>
+          <div class="field-group">
+            <label>Tu contribución actual (%)</label>
+            <input type="number" id="k_contrib" value="6" step="0.5" min="0" max="100" oninput="calc401k()" />
+          </div>
+          <div class="field-group">
+            <label>Employer match (%)</label>
+            <input type="number" id="k_match" value="3" step="0.5" oninput="calc401k()" />
+          </div>
+          <div class="field-group">
+            <label>Años hasta retiro</label>
+            <input type="number" id="k_years" value="25" oninput="calc401k()" />
+          </div>
+          <div class="field-group">
+            <label>Retorno anual esperado (%)</label>
+            <input type="number" id="k_return" value="7" step="0.5" oninput="calc401k()" />
+          </div>
+          <div class="field-group">
+            <label>Edad actual</label>
+            <input type="number" id="k_age" value="35" oninput="calc401k()" />
+          </div>
+        </div>
+        <div class="metrics-row" id="k_results">
+          <div class="metric"><div class="m-label">Tu aporte anual</div><div class="m-val" id="k_your_annual">—</div></div>
+          <div class="metric"><div class="m-label">Employer match anual</div><div class="m-val green" id="k_match_annual">—</div></div>
+          <div class="metric"><div class="m-label">Total al retiro</div><div class="m-val" id="k_total">—</div></div>
+          <div class="metric"><div class="m-label">Límite IRS 2025</div><div class="m-val" id="k_limit_status">$23,500</div></div>
+          <div class="metric"><div class="m-label">¿Maximeando?</div><div class="m-val" id="k_maxing">—</div></div>
+          <div class="metric"><div class="m-label">Ahorro en impuestos/año</div><div class="m-val green" id="k_tax_saved">—</div></div>
+        </div>
+        <div id="k_advice" style="margin-top:16px;padding:14px;border-radius:8px;font-size:13px;line-height:1.6;background:var(--green-bg);border:1px solid var(--green-border)"></div>
+        <p style="font-size:12px;color:var(--text3);margin-top:12px">💡 Límite 401(k) 2025: $23,500 (menores de 50) · $31,000 (50+ con catch-up). Siempre contribuye al menos lo suficiente para obtener el 100% del employer match — es dinero gratis.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- BROKERS -->
+  <section class="section" id="brokers">
+    <div class="section-header">
+      <h2>Comparador de brokers — EE.UU.</h2>
+      <p class="section-desc">Las mejores plataformas de inversión para 2026</p>
+    </div>
+    <div class="calc-card">
+      <div class="broker-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Broker</th>
+              <th>Comisión acciones</th>
+              <th>Acciones fraccionadas</th>
+              <th>Opciones</th>
+              <th>Cripto</th>
+              <th>Cuenta mínima</th>
+              <th>SIPC</th>
+              <th>Mejor para</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="broker-name">Fidelity <span class="broker-badge best">⭐ Top Pick</span></div></td>
+              <td class="td-rate">$0</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓ $0.65/contrato</span></td>
+              <td><span class="cross">✗</span></td>
+              <td>$0</td>
+              <td><span class="check">✓</span></td>
+              <td>Largo plazo, retiro</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">Charles Schwab <span class="broker-badge best">Top</span></div></td>
+              <td class="td-rate">$0</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓ $0.65/contrato</span></td>
+              <td><span class="cross">✗</span></td>
+              <td>$0</td>
+              <td><span class="check">✓</span></td>
+              <td>Todo tipo de inversor</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">Interactive Brokers <span class="broker-badge usa">PRO</span></div></td>
+              <td class="td-rate">$0–$0.005/acción</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓ $0.65/contrato</span></td>
+              <td><span class="check">✓</span></td>
+              <td>$0</td>
+              <td><span class="check">✓</span></td>
+              <td>Traders avanzados</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">Robinhood</div></td>
+              <td class="td-rate">$0</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓ $0.01/contrato</span></td>
+              <td><span class="check">✓</span></td>
+              <td>$0</td>
+              <td><span class="check">✓</span></td>
+              <td>Principiantes, cripto</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">Webull</div></td>
+              <td class="td-rate">$0</td>
+              <td><span class="check">✓</span></td>
+              <td><span class="check">✓ $0.55/contrato</span></td>
+              <td><span class="check">✓</span></td>
+              <td>$0</td>
+              <td><span class="check">✓</span></td>
+              <td>Gráficos técnicos</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">eToro <span class="broker-badge usa">Social</span></div></td>
+              <td class="td-rate">$1–$2 spread</td>
+              <td><span class="check">✓ desde $10</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="check">✓</span></td>
+              <td>$50</td>
+              <td><span class="cross">✗ (SIPC en proceso)</span></td>
+              <td>Copy trading</td>
+            </tr>
+            <tr>
+              <td><div class="broker-name">M1 Finance</div></td>
+              <td class="td-rate">$0</td>
+              <td><span class="check">✓ automático</span></td>
+              <td><span class="cross">✗</span></td>
+              <td><span class="cross">✗</span></td>
+              <td>$100</td>
+              <td><span class="check">✓</span></td>
+              <td>Inversión automatizada</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--text3);margin-top:16px">⚠️ Información referencial actualizada a 2026. Verifica tarifas actuales en los sitios oficiales. No somos asesores financieros.</p>
+    </div>
+  </section>
+
+  <!-- GLOSARIO FINANCIERO -->
+  <section class="section" id="glosario">
+    <div class="section-header">
+      <h2>Glosario financiero</h2>
+      <p class="section-desc">200+ términos explicados en lenguaje simple</p>
+    </div>
+    <input type="text" class="glossary-search" id="glossSearch" placeholder="🔍 Buscar término: ej. 'ETF', 'inflación', 'dividendo'..." oninput="filterGlossary()" />
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </section>
+
+</main>
+
+<!-- AD SLOT 2: Banner antes del footer (alto engagement) -->
+<!--
+<div style="display:flex;justify-content:center;padding:32px 24px 0;background:var(--bg)">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+</div>
+-->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo">Finance<span>Hub</span></div>
+      <p>Herramientas financieras gratuitas para todo el mundo. Sin registro. Las tasas de cambio son reales y se actualizan automáticamente cada 60 segundos.</p>
+    </div>
+    <div class="footer-links">
+      <a onclick="openModal('privacyModal')">Política de privacidad</a>
+      <a onclick="openModal('termsModal')">Términos de uso</a>
+      <a onclick="openModal('supportModal')">Soporte y contacto</a>
+      <a href="https://exchangerate-api.com" target="_blank">API de divisas</a>
+    </div>
+    <div class="footer-note">
+      © 2026 FinanceHub. Información educativa, no asesoría financiera. Tasas de cambio reales actualizadas cada 60 segundos via <a href="https://exchangerate-api.com" target="_blank">exchangerate-api.com</a>.
+      Hecho con ❤️ para hispanohablantes y profesionales en EE.UU.
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP BUTTON -->
+<a class="whatsapp-btn" id="whatsappBtn" href="https://wa.me/51934734478?text=Hola,%20necesito%20ayuda%20con%20FinanceHub" target="_blank">
+  <span class="whatsapp-icon">💬</span>
+  Soporte en WhatsApp
+</a>
+
+<!-- MODAL: PRIVACY POLICY -->
+<div class="page-overlay" id="privacyModal">
+  <div class="page-modal">
+    <div class="page-modal-header">
+      <h2>🔒 Política de Privacidad</h2>
+      <button class="modal-close" onclick="closeModal('privacyModal')">✕</button>
+    </div>
+    <div class="page-modal-body">
+      <p><strong>Última actualización:</strong> Abril 2026</p>
+
+      <h3>1. Información que recopilamos</h3>
+      <p>FinanceHub <strong>no recopila datos personales</strong>. No requerimos registro ni inicio de sesión. Las tasas de cambio se obtienen automáticamente de forma segura a través de un servidor proxy, sin exponer credenciales al usuario.</p>
+
+      <h3>2. Uso de cookies</h3>
+      <p>Utilizamos cookies y tecnologías similares para los siguientes propósitos:</p>
+      <ul>
+        <li><strong>Cookies esenciales:</strong> Necesarias para el funcionamiento básico del sitio. No pueden desactivarse. Incluyen cookies para recordar tus preferencias de consentimiento.</li>
+        <li><strong>Cookies de analítica:</strong> Nos permiten entender cómo los visitantes interactúan con el sitio (páginas visitadas, duración, fuente de tráfico) de forma anónima y agregada.</li>
+        <li><strong>Cookies de publicidad (Google AdSense):</strong> Si aceptas cookies, Google AdSense puede usar cookies propias y de terceros para mostrarte anuncios relevantes basados en tus intereses. Google actúa como proveedor de tecnología publicitaria independiente.</li>
+      </ul>
+      <p>Puedes controlar las cookies desde tu navegador. Ten en cuenta que deshabilitar ciertas cookies puede afectar la funcionalidad del sitio. Al hacer clic en "Aceptar todas" en el banner de cookies, consientes el uso de todas las categorías de cookies descritas anteriormente.</p>
+
+      <h3>3. Google AdSense y publicidad</h3>
+      <p>FinanceHub utiliza Google AdSense para mostrar publicidad. Google AdSense puede usar la tecnología DoubleClick DART cookie para mostrar anuncios basados en tus visitas a este y otros sitios en Internet. Puedes optar por no recibir anuncios personalizados visitando la <a href="https://www.google.com/settings/ads" target="_blank">Configuración de anuncios de Google</a>. Los anuncios de terceros pueden ser de proveedores que también utilizan cookies para recopilar datos sobre tus intereses.</p>
+
+      <h3>4. API de divisas externa</h3>
+      <p>Si configuras una API key de ExchangeRate-API, las solicitudes de tasas de cambio se envían directamente desde tu navegador a los servidores de ExchangeRate-API. Consulta su política de privacidad en <a href="https://exchangerate-api.com/privacy" target="_blank">exchangerate-api.com/privacy</a>.</p>
+
+      <h3>5. Datos de calculadoras</h3>
+      <p>Todos los cálculos (interés compuesto, retiro, préstamos, etc.) se realizan <strong>100% en tu navegador</strong>. Ningún dato financiero personal es enviado a ningún servidor.</p>
+
+      <h3>6. Menores de edad</h3>
+      <p>FinanceHub es una herramienta educativa para mayores de 18 años. No recopilamos intencionalmente información de menores.</p>
+
+      <h3>7. Cambios a esta política</h3>
+      <p>Cualquier cambio será notificado en esta página. El uso continuado del sitio implica aceptación de los términos vigentes.</p>
+
+      <h3>8. Contacto</h3>
+      <p>Para preguntas sobre privacidad, contáctanos por WhatsApp o email a <strong>privacidadfinance@gmail.com</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TERMS OF USE -->
+<div class="page-overlay" id="termsModal">
+  <div class="page-modal">
+    <div class="page-modal-header">
+      <h2>📋 Términos de Uso</h2>
+      <button class="modal-close" onclick="closeModal('termsModal')">✕</button>
+    </div>
+    <div class="page-modal-body">
+      <p><strong>Última actualización:</strong> Enero 2026</p>
+
+      <h3>1. Aceptación de términos</h3>
+      <p>Al usar FinanceHub, aceptas estos términos. Si no estás de acuerdo, por favor no uses el sitio.</p>
+
+      <h3>2. Uso permitido</h3>
+      <p>FinanceHub está diseñado para uso educativo e informativo. Puedes usar las herramientas para:</p>
+      <ul>
+        <li>Consultar tasas de cambio de referencia</li>
+        <li>Hacer cálculos financieros personales</li>
+        <li>Aprender conceptos financieros</li>
+        <li>Comparar opciones de inversión de forma general</li>
+      </ul>
+
+      <h3>3. Limitación de responsabilidad</h3>
+      <p>FinanceHub <strong>NO es una plataforma de asesoría financiera</strong>. Toda la información es educativa y referencial. No somos responsables de decisiones financieras tomadas en base al contenido del sitio. Siempre consulta a un asesor financiero certificado.</p>
+
+      <h3>4. Precisión de la información</h3>
+      <p>Las tasas de cambio mostradas son referenciales. Las tasas reales pueden diferir. Para transacciones reales, consulta fuentes oficiales (bancos, casas de cambio autorizadas).</p>
+
+      <h3>5. Propiedad intelectual</h3>
+      <p>El código, diseño y contenido de FinanceHub son propiedad de FinanceHub. No puedes reproducir el sitio sin autorización.</p>
+
+      <h3>6. Ley aplicable</h3>
+      <p>Estos términos se rigen por las leyes de la República del Perú, sin perjuicio de derechos aplicables en el país del usuario.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUPPORT -->
+<div class="page-overlay" id="supportModal">
+  <div class="page-modal">
+    <div class="page-modal-header">
+      <h2>💬 Soporte y Contacto</h2>
+      <button class="modal-close" onclick="closeModal('supportModal')">✕</button>
+    </div>
+    <div class="page-modal-body">
+      <h3>¿Necesitas ayuda?</h3>
+      <p>Estamos aquí para ayudarte. Elige el canal que prefieras:</p>
+
+      <div style="display:grid;gap:16px;margin:20px 0">
+        <a href="https://wa.me/51934734478?text=Hola,%20necesito%20ayuda%20con%20FinanceHub" target="_blank"
+          style="display:flex;align-items:center;gap:16px;background:#E8FFF1;border:1px solid #9FE1CB;border-radius:12px;padding:20px;text-decoration:none;color:var(--text);transition:box-shadow 0.2s"
+          onmouseover="this.style.boxShadow='0 4px 16px rgba(29,158,117,0.2)'" onmouseout="this.style.boxShadow='none'">
+          <span style="font-size:36px">📱</span>
+          <div>
+            <div style="font-weight:600;color:var(--green-dark);font-size:16px">WhatsApp — Respuesta inmediata</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:4px">Lun–Vie 9am–6pm (Lima, Perú) · Soporte en español</div>
+            <div style="font-size:12px;color:var(--text3);margin-top:2px">Haz clic para abrir WhatsApp</div>
+          </div>
+        </a>
+
+        <a href="mailto:financehubsupport21@gmail.com"
+          style="display:flex;align-items:center;gap:16px;background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:20px;text-decoration:none;color:var(--text);transition:box-shadow 0.2s"
+          onmouseover="this.style.boxShadow='var(--shadow-md)'" onmouseout="this.style.boxShadow='none'">
+          <span style="font-size:36px">📧</span>
+          <div>
+            <div style="font-weight:600;font-size:16px">Email — financehubsupport21@gmail.com</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:4px">Respuesta en 24 horas hábiles</div>
+          </div>
+        </a>
+      </div>
+
+      <h3>Preguntas frecuentes</h3>
+      <p><strong>¿Las tasas son reales?</strong> Sí. Las tasas se obtienen automáticamente en tiempo real desde ExchangeRate-API. No necesitas configurar nada.</p>
+      <p><strong>¿Con qué frecuencia se actualizan?</strong> Automáticamente cada 60 segundos. No necesitas hacer nada.</p>
+      <p><strong>¿Guardan mis datos?</strong> No. Todo se procesa en tu navegador. Ningún dato tuyo sale de tu dispositivo.</p>
+      <p><strong>¿Es gratis?</strong> Sí, FinanceHub es completamente gratuito. Sin registro. Mostramos algunos anuncios de Google para mantener el sitio.</p>
+
+      <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:10px;padding:16px;margin-top:20px">
+        <strong style="color:var(--green-dark)">📲 ¿Cómo conectar un bot de WhatsApp?</strong>
+        <p style="margin-top:8px;font-size:13px;color:var(--text2)">Para integrar un bot real de WhatsApp Business necesitas: (1) Cuenta WhatsApp Business API verificada, (2) Número de teléfono dedicado, (3) Proveedor BSP (Twilio, 360dialog, WATI, etc.). El botón de soporte actual abre un chat directo. Para un bot automatizado, escríbenos y te asesoramos.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- COOKIE CONSENT BANNER -->
+<div id="cookieBanner">
+  <div style="flex:1;min-width:240px">
+    🍪 <strong>Usamos cookies</strong> para mejorar tu experiencia y mostrar anuncios relevantes (Google AdSense).
+    Al continuar, aceptas nuestra <a onclick="openModal('privacyModal')">Política de Privacidad</a> y el uso de cookies de analítica y publicidad.
+  </div>
+  <div class="cookie-actions">
+    <button class="cookie-btn-accept" onclick="acceptCookies()">Aceptar todas</button>
+    <button class="cookie-btn-decline" onclick="declineCookies()">Solo esenciales</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   FINANCEHUB v2.0 — main.js mejorado
+   Tasas REALES via ExchangeRate-API + todas las calculadoras
+   ===================================================== */
+
+
+// ── COOKIES & ADSENSE ────────────────────────────────
+function initCookieBanner() {
+  if (!localStorage.getItem('fh_cookie_choice')) {
+    setTimeout(() => {
+      const b = document.getElementById('cookieBanner');
+      if (b) b.classList.add('show');
+    }, 1200);
+  }
+}
+function acceptCookies() {
+  localStorage.setItem('fh_cookie_choice', 'accepted');
+  hideCookieBanner();
+  loadAdSense();
+}
+function declineCookies() {
+  localStorage.setItem('fh_cookie_choice', 'declined');
+  hideCookieBanner();
+}
+function hideCookieBanner() {
+  const b = document.getElementById('cookieBanner');
+  if (b) { b.style.transform = 'translateY(100%)'; setTimeout(() => b.remove(), 400); }
+}
+function loadAdSense() {
+  // Carga AdSense solo si el usuario aceptó cookies
+  const s = document.getElementById('adsense-script');
+  if (s && s.dataset.src) {
+    const script = document.createElement('script');
+    script.src = s.dataset.src;
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+    s.removeAttribute('data-src');
+  }
+}
+// Si ya aceptó antes, cargar AdSense directo
+if (localStorage.getItem('fh_cookie_choice') === 'accepted') { 
+  document.addEventListener('DOMContentLoaded', loadAdSense);
+}
+
+// ── MONEDAS ─────────────────────────────────────────
+const CURRENCIES = [
+  { code:'EUR', name:'Euro',               flag:'🇪🇺', base:0.9210 },
+  { code:'GBP', name:'Libra esterlina',    flag:'🇬🇧', base:0.7920 },
+  { code:'JPY', name:'Yen japonés',        flag:'🇯🇵', base:154.20 },
+  { code:'CAD', name:'Dólar canadiense',   flag:'🇨🇦', base:1.3620 },
+  { code:'AUD', name:'Dólar australiano',  flag:'🇦🇺', base:1.5410 },
+  { code:'CHF', name:'Franco suizo',       flag:'🇨🇭', base:0.9010 },
+  { code:'CNY', name:'Yuan chino',         flag:'🇨🇳', base:7.2400 },
+  { code:'MXN', name:'Peso mexicano',      flag:'🇲🇽', base:16.90  },
+  { code:'BRL', name:'Real brasileño',     flag:'🇧🇷', base:5.0500 },
+  { code:'INR', name:'Rupia india',        flag:'🇮🇳', base:83.200 },
+  { code:'KRW', name:'Won coreano',        flag:'🇰🇷', base:1335.0 },
+  { code:'SGD', name:'Dólar singapurense', flag:'🇸🇬', base:1.3500 },
+  { code:'HKD', name:'Dólar Hong Kong',    flag:'🇭🇰', base:7.8200 },
+  { code:'NOK', name:'Corona noruega',     flag:'🇳🇴', base:10.600 },
+  { code:'SEK', name:'Corona sueca',       flag:'🇸🇪', base:10.420 },
+  { code:'NZD', name:'Dólar neozelandés',  flag:'🇳🇿', base:1.6200 },
+  { code:'ZAR', name:'Rand sudafricano',   flag:'🇿🇦', base:18.700 },
+  { code:'ARS', name:'Peso argentino',     flag:'🇦🇷', base:882.00 },
+  { code:'PEN', name:'Sol peruano',        flag:'🇵🇪', base:3.7200 },
+  { code:'CLP', name:'Peso chileno',       flag:'🇨🇱', base:952.00 },
+  { code:'COP', name:'Peso colombiano',    flag:'🇨🇴', base:3880.0 },
+  { code:'TRY', name:'Lira turca',         flag:'🇹🇷', base:32.100 },
+  { code:'SAR', name:'Riyal saudí',        flag:'🇸🇦', base:3.7500 },
+  { code:'AED', name:'Dírham EAU',         flag:'🇦🇪', base:3.6700 },
+  { code:'THB', name:'Baht tailandés',     flag:'🇹🇭', base:35.400 },
+  { code:'PHP', name:'Peso filipino',      flag:'🇵🇭', base:56.800 },
+  { code:'IDR', name:'Rupia indonesia',    flag:'🇮🇩', base:15800  },
+  { code:'MYR', name:'Ringgit malayo',     flag:'🇲🇾', base:4.7200 },
+  { code:'PLN', name:'Esloti polaco',      flag:'🇵🇱', base:4.0300 },
+  { code:'CZK', name:'Corona checa',       flag:'🇨🇿', base:23.400 },
+  { code:'HUF', name:'Forinto húngaro',    flag:'🇭🇺', base:364.00 },
+  { code:'ILS', name:'Séquel israelí',     flag:'🇮🇱', base:3.7100 },
+  { code:'DKK', name:'Corona danesa',      flag:'🇩🇰', base:6.8800 },
+  { code:'RON', name:'Leu rumano',         flag:'🇷🇴', base:4.5900 },
+  { code:'VND', name:'Dong vietnamita',    flag:'🇻🇳', base:24900  },
+  { code:'UAH', name:'Grivna ucraniana',   flag:'🇺🇦', base:38.500 },
+  { code:'NGN', name:'Naira nigeriana',    flag:'🇳🇬', base:1540.0 },
+  { code:'EGP', name:'Libra egipcia',      flag:'🇪🇬', base:48.500 },
+  { code:'PKR', name:'Rupia pakistaní',    flag:'🇵🇰', base:278.00 },
+  { code:'BDT', name:'Taka bangladesí',    flag:'🇧🇩', base:109.80 },
+  { code:'DOP', name:'Peso dominicano',    flag:'🇩🇴', base:58.50  },
+  { code:'GTQ', name:'Quetzal guatemalteco',flag:'🇬🇹', base:7.77  },
+  { code:'HNL', name:'Lempira hondureño',  flag:'🇭🇳', base:24.70  },
+  { code:'CRC', name:'Colón costarricense',flag:'🇨🇷', base:513.0  },
+  { code:'PYG', name:'Guaraní paraguayo',  flag:'🇵🇾', base:7350.0 },
+  { code:'BOB', name:'Boliviano boliviano',flag:'🇧🇴', base:6.91   },
+  { code:'UYU', name:'Peso uruguayo',      flag:'🇺🇾', base:39.50  },
+];
+
+const BASE_USD = { code:'USD', name:'Dólar USA', flag:'🇺🇸', base:1 };
+const ALL = [BASE_USD, ...CURRENCIES];
+
+// ── ESTADO ────────────────────────────────────────
+let currentRates  = {};
+let prevRates     = {};
+let selectedCurr  = 'EUR';
+let baseCurr      = 'USD';
+let chartHistory  = [];
+let chartLabels   = [];
+const MAX_PTS     = 80;
+let liveChart     = null;
+let compChart     = null;
+let loanDonut     = null;
+let loanBar       = null;
+let isRealApi     = true;
+let apiKey        = 'PROXY'; // Key is stored securely on Cloudflare Worker
+
+// ── UTILS ─────────────────────────────────────────
+function noise(val, pct=0.0010) {
+  return val * (1 + (Math.random()-0.5)*2*pct);
+}
+function getRate(from, to) {
+  const uFrom = from==='USD' ? 1 : (currentRates[from] || 1);
+  const uTo   = to  ==='USD' ? 1 : (currentRates[to]   || 1);
+  return uTo / uFrom;
+}
+function fmtRate(r) {
+  if (r>=10000) return r.toLocaleString('en-US',{maximumFractionDigits:0});
+  if (r>=1000)  return r.toLocaleString('en-US',{maximumFractionDigits:1});
+  if (r>=100)   return r.toFixed(2);
+  if (r>=10)    return r.toFixed(3);
+  if (r>=1)     return r.toFixed(4);
+  return r.toFixed(5);
+}
+function fmtMoney(n, sym='$') {
+  if (Math.abs(n)>=1e9) return sym+(n/1e9).toFixed(2)+'B';
+  if (Math.abs(n)>=1e6) return sym+(n/1e6).toFixed(2)+'M';
+  if (Math.abs(n)>=1e3) return sym+(n/1e3).toFixed(1)+'K';
+  return sym+Math.round(n).toLocaleString('en-US');
+}
+function fmtChange(curr, prev) {
+  const chg = ((curr-prev)/Math.abs(prev))*100;
+  return { text:(chg>=0?'+':'')+chg.toFixed(3)+'%', up: chg>=0 };
+}
+function nowTime() {
+  return new Date().toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+function setEl(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ── API KEY ─── (Gestionada via Cloudflare Worker — invisible para usuarios) ───
+function saveApiKey() { /* No requerido — la API key está en el servidor */ }
+function loadApiKey() { /* No requerido — la API key está en el servidor */ }
+
+async function fetchRealRates() {
+  try {
+    const base = baseCurr || 'USD';
+    const url  = `https://trabajo.gomezka339.workers.dev/?base=${base}`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.result !== 'success') {
+      console.warn('API error:', data['error-type']);
+      return;
+    }
+    prevRates = { ...currentRates };
+    // Build rates with base as 1
+    if (base === 'USD') {
+      ALL.forEach(c => {
+        if (data.conversion_rates[c.code]) {
+          currentRates[c.code] = data.conversion_rates[c.code];
+        }
+      });
+    } else {
+      // Store as rates vs USD
+      const usdRate = data.conversion_rates['USD'] || 1;
+      ALL.forEach(c => {
+        if (data.conversion_rates[c.code]) {
+          // Convert to USD base
+          currentRates[c.code] = data.conversion_rates[c.code] / usdRate;
+        }
+      });
+      currentRates['USD'] = 1;
+    }
+    isRealApi = true;
+    updateApiStatusUI(true);
+    updateAllUI();
+  } catch(e) {
+    console.error('Fetch real rates failed:', e);
+  }
+}
+
+function updateApiStatusUI(real) {
+  const badge  = document.getElementById('apiStatusLabel');
+  const hero   = document.getElementById('apiStatusBadge');
+  if (badge) {
+    badge.className = 'api-status ' + (real ? 'real' : 'sim');
+    badge.textContent = real ? '● API Real Conectada' : '● Simulado';
+  }
+  if (hero) hero.textContent = real ? 'Tasas reales en tiempo real — API conectada' : 'Tasas actualizando en vivo';
+}
+
+// ── INIT RATES ────────────────────────────────────
+function initRates() {
+  CURRENCIES.forEach(c => { currentRates[c.code] = c.base; });
+  currentRates['USD'] = 1;
+  prevRates = { ...currentRates };
+}
+
+function simulateTick() {
+  prevRates = { ...currentRates };
+  CURRENCIES.forEach(c => {
+    currentRates[c.code] = noise(currentRates[c.code], 0.0014);
+  });
+}
+
+// ── TICKER ────────────────────────────────────────
+function buildTicker() {
+  const items = CURRENCIES.slice(0,30).map(c => {
+    const rate = getRate('USD', c.code);
+    const chg  = fmtChange(rate, c.base);
+    return `<div class="ticker-item"><span class="t-code">${c.flag} ${c.code}</span><span>${fmtRate(rate)}</span><span class="${chg.up?'t-up':'t-down'}">${chg.text}</span></div>`;
+  }).join('');
+  const track = document.getElementById('tickerTrack');
+  if (track) track.innerHTML = items+items;
+}
+
+// ── GRID ──────────────────────────────────────────
+function buildGrid() {
+  const grid = document.getElementById('currGrid');
+  if (!grid) return;
+  grid.innerHTML = CURRENCIES.map(c => {
+    const rate = getRate(baseCurr, c.code);
+    const prev = (prevRates[c.code]||c.base) / (baseCurr==='USD' ? 1 : (prevRates[baseCurr]||1));
+    const chg  = fmtChange(rate, prev);
+    return `<div class="curr-card ${selectedCurr===c.code?'active':''}" onclick="selectCurr('${c.code}')">
+      <div class="cc-top"><span class="cc-flag">${c.flag}</span><span class="cc-chg ${chg.up?'up':'down'}">${chg.text}</span></div>
+      <div class="cc-code">${c.code}/${baseCurr}</div>
+      <div class="cc-rate">${fmtRate(rate)}</div>
+      <div class="cc-name">${c.name}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── MAIN RATE CARD ────────────────────────────────
+function updateMainCard() {
+  const rate  = getRate(baseCurr, selectedCurr);
+  const prev  = (prevRates[selectedCurr]||currentRates[selectedCurr]) / (baseCurr==='USD' ? 1 : (prevRates[baseCurr]||1));
+  const chg   = fmtChange(rate, prev);
+  const baseDef = CURRENCIES.find(c=>c.code===selectedCurr)?.base || rate;
+  const dayChg = fmtChange(rate, baseDef);
+  const curr  = ALL.find(c=>c.code===selectedCurr);
+  setEl('mainLabel', `${curr?.flag||''} ${baseCurr} → ${selectedCurr}`);
+  setEl('mainRate',  fmtRate(rate));
+  setEl('mainSub',   `1 ${baseCurr} = ${fmtRate(rate)} ${selectedCurr} · ${curr?.name||''}`);
+  const badge = document.getElementById('mainBadge');
+  if (badge) { badge.textContent = `${dayChg.text} hoy`; badge.className = 'badge-chg '+(dayChg.up?'up':'down'); }
+  if (chartHistory.length>=2) {
+    const slice = chartHistory.slice(-30);
+    const mn = Math.min(...slice), mx = Math.max(...slice);
+    setEl('mainRange', `Rango 30pts: ${fmtRate(mn)} — ${fmtRate(mx)}`);
+  }
+}
+
+// ── LIVE CHART ─────────────────────────────────────
+function seedChart() {
+  const seed = getRate(baseCurr, selectedCurr);
+  chartHistory = []; chartLabels = [];
+  for (let i=MAX_PTS; i>0; i--) {
+    const t = new Date(Date.now()-i*2000);
+    chartLabels.push(t.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+    chartHistory.push(parseFloat((seed*(1+Math.sin(i*0.4)*0.003+(Math.random()-0.5)*0.002)).toFixed(6)));
+  }
+}
+
+function initLiveChart() {
+  const el = document.getElementById('liveChart');
+  if (!el) return;
+  seedChart();
+  if (liveChart) liveChart.destroy();
+  liveChart = new Chart(el.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: [...chartLabels],
+      datasets: [{ label:'Tipo de cambio', data:[...chartHistory],
+        borderColor:'#1D9E75', backgroundColor:'rgba(29,158,117,0.06)',
+        borderWidth:1.5, pointRadius:0, fill:true, tension:0.35 }]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false, animation:{duration:250},
+      plugins:{legend:{display:false}},
+      scales:{
+        x:{ticks:{maxTicksLimit:6,font:{size:11,family:"'DM Mono',monospace"},color:'#9B9A95'},grid:{display:false}},
+        y:{ticks:{font:{size:11,family:"'DM Mono',monospace"},color:'#9B9A95',callback:v=>fmtRate(v)},grid:{color:'rgba(0,0,0,0.05)'}}
+      }
+    }
+  });
+}
+
+function pushChartPoint() {
+  const rate = getRate(baseCurr, selectedCurr);
+  chartHistory.push(parseFloat(fmtRate(rate)));
+  chartLabels.push(nowTime());
+  if (chartHistory.length>MAX_PTS) { chartHistory.shift(); chartLabels.shift(); }
+}
+
+function updateLiveChart() {
+  if (!liveChart) return;
+  liveChart.data.labels = [...chartLabels];
+  liveChart.data.datasets[0].data = [...chartHistory];
+  const last = chartHistory[chartHistory.length-1];
+  const prev = chartHistory[chartHistory.length-2]||last;
+  const isUp = last>=prev;
+  liveChart.data.datasets[0].borderColor     = isUp ? '#1D9E75' : '#E24B4A';
+  liveChart.data.datasets[0].backgroundColor = isUp ? 'rgba(29,158,117,0.06)' : 'rgba(226,75,74,0.05)';
+  liveChart.update('none');
+  setEl('chartPts', chartHistory.length+' puntos');
+  setEl('chartTitle', `${baseCurr}/${selectedCurr} en tiempo real`);
+}
+
+// ── SELECT CURRENCY ───────────────────────────────
+function selectCurr(code) {
+  selectedCurr = code;
+  initLiveChart(); updateMainCard(); buildGrid();
+}
+function changeBase() {
+  baseCurr = document.getElementById('baseCurr').value;
+  if (isRealApi) fetchRealRates();
+  else { initLiveChart(); updateMainCard(); buildGrid(); doConvert(); }
+}
+function changePeriod() { initLiveChart(); }
+
+// ── MAIN TICK ─────────────────────────────────────
+function tick() {
+  if (!isRealApi) simulateTick();
+  pushChartPoint(); updateLiveChart(); updateMainCard(); buildGrid(); buildTicker(); doConvert(); updateConvTable();
+  setEl('lastUpdate', 'Actualizado '+nowTime());
+}
+
+// ── SEARCHABLE CURRENCY DROPDOWN ─────────────────
+let dropdownValues = { cvFrom: 'USD', cvTo: 'EUR' };
+
+function buildConvSelects() {
+  // Legacy hidden selects for compatibility
+  const opts = ALL.map(c=>`<option value="${c.code}">${c.flag} ${c.code} — ${c.name}</option>`).join('');
+  const f = document.getElementById('cvFrom');
+  const t = document.getElementById('cvTo');
+  if (f) { f.innerHTML = opts; f.value = 'USD'; }
+  if (t) { t.innerHTML = opts; t.value = 'EUR'; }
+  // Build visual dropdowns
+  renderDropdownList('cvFrom', 'USD');
+  renderDropdownList('cvTo', 'EUR');
+  updateDropdownDisplay('cvFrom', 'USD');
+  updateDropdownDisplay('cvTo', 'EUR');
+  // Close dropdowns on outside click
+  document.addEventListener('click', e => {
+    ['cvFrom','cvTo'].forEach(id => {
+      const wrap = document.getElementById('wrap-'+id);
+      if (wrap && !wrap.contains(e.target)) closeDropdown(id);
+    });
+  });
+}
+
+function renderDropdownList(id, selected, filter='') {
+  const list = document.getElementById('list-'+id);
+  if (!list) return;
+  const q = filter.toLowerCase();
+  const filtered = ALL.filter(c =>
+    !q || c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q)
+  );
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="curr-no-results">No results for "${filter}"</div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(c => `
+    <div class="curr-list-item ${c.code===selected?'selected':''}" onclick="selectDropdownValue('${id}','${c.code}')">
+      <span class="cli-flag">${c.flag}</span>
+      <span class="cli-code">${c.code}</span>
+      <span class="cli-name">${c.name}</span>
+    </div>
+  `).join('');
+}
+
+function filterDropdown(id, q) {
+  renderDropdownList(id, dropdownValues[id], q);
+}
+
+function updateDropdownDisplay(id, code) {
+  const c = ALL.find(x=>x.code===code);
+  if (!c) return;
+  const display = document.getElementById('display-'+id);
+  if (display) display.textContent = `${c.flag} ${c.code} — ${c.name}`;
+}
+
+function selectDropdownValue(id, code) {
+  dropdownValues[id] = code;
+  const sel = document.getElementById(id);
+  if (sel) sel.value = code;
+  updateDropdownDisplay(id, code);
+  renderDropdownList(id, code);
+  closeDropdown(id);
+  doConvert();
+}
+
+function toggleDropdown(id) {
+  const drop = document.getElementById('drop-'+id);
+  const btn  = document.getElementById('btn-'+id);
+  if (!drop) return;
+  const isOpen = drop.classList.contains('open');
+  // Close all dropdowns first
+  ['cvFrom','cvTo'].forEach(did => closeDropdown(did));
+  if (!isOpen) {
+    drop.classList.add('open');
+    btn && btn.classList.add('open');
+    const search = document.getElementById('search-'+id);
+    if (search) { search.value=''; search.focus(); }
+    renderDropdownList(id, dropdownValues[id], '');
+  }
+}
+
+function closeDropdown(id) {
+  const drop = document.getElementById('drop-'+id);
+  const btn  = document.getElementById('btn-'+id);
+  if (drop) drop.classList.remove('open');
+  if (btn)  btn.classList.remove('open');
+}
+
+// Override doConvert to use dropdown values
+const _origDoConvert = window.doConvert;
+
+
+// ── CONVERSOR ─────────────────────────────────────
+function doConvert() {
+  const amt  = parseFloat(document.getElementById('cvAmt')?.value)||0;
+  const from = dropdownValues['cvFrom'] || document.getElementById('cvFrom')?.value||'USD';
+  const to   = dropdownValues['cvTo']   || document.getElementById('cvTo')?.value  ||'EUR';
+  const rate = getRate(from, to);
+  const res  = amt * rate;
+  const toCurr = ALL.find(c=>c.code===to);
+  setEl('crMain', res.toLocaleString('en-US',{maximumFractionDigits:res>100?2:4})+' '+to+' '+(toCurr?.flag||''));
+  setEl('crRate', `1 ${from} = ${fmtRate(rate)} ${to}  ·  ${isRealApi?'Live rate':'Simulated rate'}`);
+}
+
+function swapConvert() {
+  const oldFrom = dropdownValues['cvFrom'];
+  const oldTo   = dropdownValues['cvTo'];
+  selectDropdownValue('cvFrom', oldTo);
+  selectDropdownValue('cvTo',   oldFrom);
+  doConvert();
+}
+
+function quickConv(amount) {
+  const el = document.getElementById('cvAmt');
+  if (el) { el.value = amount; doConvert(); }
+}
+
+function updateConvTable() {
+  const from  = dropdownValues['cvFrom'] || document.getElementById('cvFrom')?.value||'USD';
+  const amt   = parseFloat(document.getElementById('cvAmt')?.value)||1;
+  const table = document.getElementById('convTable');
+  if (!table) return;
+  const rows = CURRENCIES.slice(0,20).map(c => {
+    const rate = getRate(from, c.code);
+    const prev = (prevRates[c.code]||c.base) / (from==='USD'?1:(prevRates[from]||1));
+    const chg  = fmtChange(rate, prev);
+    const converted = (amt*rate).toLocaleString('en-US',{maximumFractionDigits:2});
+    return `<tr><td>${c.flag} <strong>${c.code}</strong></td><td>${c.name}</td><td class="td-rate">${fmtRate(rate)}</td><td class="td-chg ${chg.up?'up':'down'}">${chg.text}</td><td class="td-rate">${converted} ${c.code}</td></tr>`;
+  }).join('');
+  table.innerHTML=`<table><thead><tr><th>Moneda</th><th>País</th><th>Tasa</th><th>Cambio</th><th>${amt.toLocaleString()} ${from} =</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ── INTERÉS COMPUESTO ─────────────────────────────
+function calcCompound() {
+  const p = parseFloat(document.getElementById('ci_principal')?.value)||0;
+  const m = parseFloat(document.getElementById('ci_monthly')?.value)  ||0;
+  const r = parseFloat(document.getElementById('ci_rate')?.value)     /100;
+  const y = parseInt(document.getElementById('ci_years')?.value)      ||1;
+  const n = 12;
+  const labels=[],dataFinal=[],dataInvested=[],dataGains=[];
+  let val=p;
+  for (let yr=1;yr<=y;yr++) {
+    val=val*(1+r/n)**n+m*((1+r/n)**n-1)/(r/n);
+    const invested=p+m*12*yr;
+    labels.push('Año '+yr);
+    dataFinal.push(Math.round(val));
+    dataInvested.push(Math.round(invested));
+    dataGains.push(Math.round(Math.max(0,val-invested)));
+  }
+  const invested=p+m*12*y, mult=val/Math.max(invested,1);
+  setEl('ci_final',    fmtMoney(val));
+  setEl('ci_invested', fmtMoney(invested));
+  setEl('ci_gain',     fmtMoney(val-invested));
+  setEl('ci_mult',     mult.toFixed(2)+'x');
+  const el=document.getElementById('compChart');
+  if (!el) return;
+  if (compChart) compChart.destroy();
+  compChart = new Chart(el.getContext('2d'),{
+    type:'line',
+    data:{labels,datasets:[
+      {label:'Valor total',   data:dataFinal,    borderColor:'#1D9E75',backgroundColor:'rgba(29,158,117,0.08)',fill:true, tension:0.3,pointRadius:0,borderWidth:2},
+      {label:'Capital aport.',data:dataInvested, borderColor:'#B4B2A9',backgroundColor:'transparent',           fill:false,tension:0.3,pointRadius:0,borderDash:[5,4],borderWidth:1.5},
+      {label:'Ganancias',     data:dataGains,    borderColor:'#5DCAA5',backgroundColor:'transparent',           fill:false,tension:0.3,pointRadius:0,borderDash:[2,3],borderWidth:1.5},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{maxTicksLimit:10,font:{size:11},color:'#9B9A95'},grid:{display:false}},
+              y:{ticks:{font:{size:11},color:'#9B9A95',callback:v=>v>=1e6?'$'+(v/1e6).toFixed(1)+'M':'$'+(v/1e3).toFixed(0)+'K'},grid:{color:'rgba(0,0,0,0.05)'}}}}
+  });
+}
+
+// ── RETIRO ────────────────────────────────────────
+function calcRetire() {
+  const age       = parseInt(document.getElementById('r_age')?.value)        ||30;
+  const retireAge = parseInt(document.getElementById('r_retire_age')?.value) ||65;
+  const expenses  = parseFloat(document.getElementById('r_expenses')?.value) ||3000;
+  const savings   = parseFloat(document.getElementById('r_savings')?.value)  ||0;
+  const rate      = parseFloat(document.getElementById('r_rate')?.value)     /100;
+  const lifeYrs   = parseInt(document.getElementById('r_life')?.value)       ||25;
+  const yearsLeft = Math.max(0,retireAge-age);
+  const rule4     = expenses*12*25;
+  const futureVal = savings*(1+rate)**yearsLeft;
+  const needed    = Math.max(0,rule4-futureVal);
+  const mRate     = rate/12, months=yearsLeft*12;
+  let monthly=0;
+  if (months>0&&mRate>0) monthly=needed*mRate/((1+mRate)**months-1);
+  const passiveMonthly = (rule4*0.04)/12;
+  setEl('r_goal',    fmtMoney(rule4));
+  setEl('r_monthly', fmtMoney(monthly)+'/mes');
+  setEl('r_years',   yearsLeft+' años');
+  setEl('r_passive', fmtMoney(passiveMonthly)+'/mes');
+  setEl('retireAge', retireAge+' años');
+}
+
+// ── PRÉSTAMO ──────────────────────────────────────
+function calcLoan() {
+  const amount    = parseFloat(document.getElementById('l_amount')?.value)||0;
+  const years     = parseInt(document.getElementById('l_years')?.value)   ||1;
+  const annualR   = parseFloat(document.getElementById('l_rate')?.value)  /100;
+  const mRate     = annualR/12, n=years*12;
+  let monthly=0;
+  if (mRate>0) monthly=amount*mRate*(1+mRate)**n/((1+mRate)**n-1);
+  else monthly=amount/n;
+  const total=monthly*n, interest=total-amount;
+  setEl('l_monthly',  fmtMoney(monthly)+'/mes');
+  setEl('l_total',    fmtMoney(total));
+  setEl('l_interest', fmtMoney(interest));
+  setEl('l_pct',      (interest/amount*100).toFixed(1)+'%');
+  const donutEl=document.getElementById('loanDonut');
+  if (donutEl) {
+    if (loanDonut) loanDonut.destroy();
+    loanDonut=new Chart(donutEl.getContext('2d'),{type:'doughnut',data:{labels:['Capital','Intereses'],datasets:[{data:[Math.round(amount),Math.round(interest)],backgroundColor:['#1D9E75','#E24B4A'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}});
+  }
+  const barEl=document.getElementById('loanBar');
+  if (barEl&&years<=30) {
+    const labelsBar=[],capData=[],intData=[];
+    let balance=amount;
+    for (let yr=1;yr<=years;yr++) {
+      let yearCap=0,yearInt=0;
+      for (let mo=0;mo<12;mo++) {
+        const intPay=balance*mRate, capPay=monthly-intPay;
+        yearInt+=intPay; yearCap+=capPay; balance=Math.max(0,balance-capPay);
+      }
+      labelsBar.push('Año '+yr); capData.push(Math.round(yearCap)); intData.push(Math.round(yearInt));
+    }
+    if (loanBar) loanBar.destroy();
+    loanBar=new Chart(barEl.getContext('2d'),{type:'bar',data:{labels:labelsBar,datasets:[{label:'Capital',data:capData,backgroundColor:'#1D9E75',borderRadius:3},{label:'Intereses',data:intData,backgroundColor:'#E24B4A',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{font:{size:10},color:'#9B9A95',autoSkip:true,maxTicksLimit:10},grid:{display:false}},y:{stacked:true,ticks:{font:{size:10},color:'#9B9A95',callback:v=>'$'+(v/1e3).toFixed(0)+'K'},grid:{color:'rgba(0,0,0,0.05)'}}}}});
+  }
+}
+
+// ── INFLACIÓN ─────────────────────────────────────
+function calcInflation() {
+  const amount  = parseFloat(document.getElementById('inf_amount')?.value)||1000;
+  const fromYr  = parseInt(document.getElementById('inf_from')?.value)   ||2000;
+  const toYr    = parseInt(document.getElementById('inf_to')?.value)     ||2024;
+  const infRate = parseFloat(document.getElementById('inf_rate')?.value) /100||0.031;
+  const years   = toYr - fromYr;
+  const today   = amount * (1+infRate)**years;
+  const loss    = today - amount;
+  const totalPct= ((today-amount)/amount*100).toFixed(1)+'%';
+  setEl('inf_original', '$'+amount.toLocaleString('en-US'));
+  setEl('inf_today',    fmtMoney(today));
+  setEl('inf_loss',     '+'+fmtMoney(loss)+' necesarios');
+  setEl('inf_total_pct', totalPct+' acumulado');
+}
+
+// ── MILLONARIO ────────────────────────────────────
+function calcMillionaire() {
+  const current = parseFloat(document.getElementById('m_current')?.value) ||0;
+  const monthly = parseFloat(document.getElementById('m_monthly')?.value) ||0;
+  const rate    = parseFloat(document.getElementById('m_rate')?.value)    /100||0.08;
+  const goal    = parseInt(document.getElementById('m_goal')?.value)      ||1000000;
+  const mRate   = rate/12;
+  let val=current, months=0;
+  while (val<goal && months<1200) { val=val*(1+mRate)+monthly; months++; }
+  const years   = months/12;
+  const invested= current + monthly*months;
+  const gains   = Math.max(0,goal-invested);
+  if (months>=1200) {
+    setEl('m_years_result', '∞'); setEl('m_date_result','Aumenta tu ahorro mensual');
+  } else {
+    const targetDate = new Date(); targetDate.setMonth(targetDate.getMonth()+months);
+    const opts={year:'numeric',month:'long'};
+    setEl('m_years_result', years.toFixed(1)+' años');
+    setEl('m_date_result','En '+targetDate.toLocaleDateString('es-PE',opts)+' aproximadamente');
+  }
+  setEl('m_invested',     fmtMoney(invested));
+  setEl('m_gains',        fmtMoney(gains));
+  setEl('m_interest_pct', months<1200 ? (gains/goal*100).toFixed(1)+'%' : '—');
+}
+
+// ── DIVIDENDOS ────────────────────────────────────
+function calcDividend() {
+  const capital = parseFloat(document.getElementById('dv_capital')?.value) ||50000;
+  const yld     = parseFloat(document.getElementById('dv_yield')?.value)   /100||0.04;
+  const growth  = parseFloat(document.getElementById('dv_growth')?.value)  /100||0.05;
+  const years   = parseInt(document.getElementById('dv_years')?.value)     ||20;
+  const annual  = capital * yld;
+  const monthly = annual / 12;
+  const futureDiv = annual * (1+growth)**years;
+  let total=0;
+  for (let y=1;y<=years;y++) total += annual*(1+growth)**y;
+  setEl('dv_annual',  fmtMoney(annual));
+  setEl('dv_monthly', fmtMoney(monthly));
+  setEl('dv_future',  fmtMoney(futureDiv)+'/año');
+  setEl('dv_total',   fmtMoney(total));
+}
+
+// ── BUY vs RENT ───────────────────────────────────
+function calcBuyVsRent() {
+  const price   = parseFloat(document.getElementById('bvr_price')?.value)   ||300000;
+  const downPct = parseFloat(document.getElementById('bvr_down')?.value)    /100||0.20;
+  const rent    = parseFloat(document.getElementById('bvr_rent')?.value)    ||1800;
+  const years   = parseInt(document.getElementById('bvr_years')?.value)     ||10;
+  const mRate   = parseFloat(document.getElementById('bvr_mortgage')?.value)/100/12||0.07/12;
+  const apprec  = parseFloat(document.getElementById('bvr_apprec')?.value)  /100||0.035;
+  const down    = price*downPct, loan=price-down, n=years*12;
+  const mPay    = loan*mRate*(1+mRate)**n/((1+mRate)**n-1);
+  const totalBuy= down + mPay*n*12/12*12 + price*0.015*years; // down + mortgage + maintenance
+  const propVal = price*(1+apprec)**years;
+  const equity  = propVal - loan*(1-(((1+mRate)**n-1)/((1+mRate)**(n*1/(1/12))-1))*0.5);
+  const totalRent= rent*12*years;
+  const buyDetails= `<div style="font-size:13px;color:var(--text2)">
+    <div style="margin-bottom:8px"><strong style="color:var(--green-dark)">Enganche:</strong> $${down.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+    <div style="margin-bottom:8px"><strong style="color:var(--green-dark)">Cuota mensual:</strong> $${mPay.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+    <div style="margin-bottom:8px"><strong style="color:var(--green-dark)">Valor propiedad en ${years} años:</strong> $${propVal.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+    <div><strong style="color:var(--green-dark)">Patrimonio estimado:</strong> $${Math.max(0,equity).toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+  </div>`;
+  const rentDetails=`<div style="font-size:13px;color:var(--text2)">
+    <div style="margin-bottom:8px"><strong style="color:var(--red)">Renta mensual:</strong> $${rent.toLocaleString('en-US')}</div>
+    <div style="margin-bottom:8px"><strong style="color:var(--red)">Total pagado en ${years} años:</strong> $${totalRent.toLocaleString('en-US',{maximumFractionDigits:0})}</div>
+    <div style="margin-bottom:8px"><strong style="color:var(--red)">Sin enganche ni mantenimiento</strong></div>
+    <div><strong style="color:var(--red)">Patrimonio acumulado:</strong> $0 (sin inversión)</div>
+  </div>`;
+  const buyDet=document.getElementById('bvr_buy_details');
+  const rentDet=document.getElementById('bvr_rent_details');
+  if (buyDet) buyDet.innerHTML=buyDetails;
+  if (rentDet) rentDet.innerHTML=rentDetails;
+  const winner=document.getElementById('bvrWinner');
+  if (winner) {
+    const buyWins = equity > 0 && years >= 7;
+    winner.style.background = buyWins ? 'var(--green-bg)' : 'var(--red-bg)';
+    winner.style.color = buyWins ? 'var(--green-dark)' : 'var(--red)';
+    winner.textContent = buyWins
+      ? `✅ En ${years} años, COMPRAR puede generar más patrimonio (equity ~$${Math.max(0,equity).toLocaleString('en-US',{maximumFractionDigits:0})})`
+      : `⚠️ Con menos de 7 años, ALQUILAR puede ser más flexible y eficiente en este escenario`;
+  }
+}
+
+// ── FIRE ──────────────────────────────────────────
+function calcFIRE() {
+  const expenses  = parseFloat(document.getElementById('fire_expenses')?.value) ||40000;
+  const savings   = parseFloat(document.getElementById('fire_savings')?.value)  ||50000;
+  const saveRate  = parseFloat(document.getElementById('fire_save_rate')?.value)/100||0.40;
+  const income    = parseFloat(document.getElementById('fire_income')?.value)   ||80000;
+  const fireNum   = expenses*25;
+  const annualSave= income*saveRate;
+  const rate      = 0.07;
+  let val=savings, years=0;
+  while (val<fireNum && years<100) { val=val*(1+rate)+annualSave; years++; }
+  const targetDate=new Date(); targetDate.setFullYear(targetDate.getFullYear()+years);
+  setEl('fire_number',       fmtMoney(fireNum));
+  setEl('fire_years',        years<100 ? `En ${years} años · Año ${targetDate.getFullYear()}` : 'Aumenta tu tasa de ahorro');
+  setEl('fire_annual_save',  fmtMoney(annualSave));
+  setEl('fire_monthly_income',fmtMoney(expenses/12)+'/mes');
+}
+
+// ── SALARY USA ────────────────────────────────────
+function calcSalaryUSA() {
+  const gross   = parseFloat(document.getElementById('sal_gross')?.value)  ||75000;
+  const stateR  = parseFloat(document.getElementById('sal_state')?.value)  /100||0.093;
+  const filing  = document.getElementById('sal_filing')?.value             ||'single';
+  const k401    = parseFloat(document.getElementById('sal_401k')?.value)   ||0;
+  const taxable = Math.max(0, gross - k401 - (filing==='single'?14600:29200));
+  // Federal tax brackets 2024 (single)
+  let federal=0;
+  const brackets = filing==='single'
+    ? [[11600,0.10],[33950,0.12],[72750,0.22],[155350,0.24],[197300,0.32],[539900,0.35],[Infinity,0.37]]
+    : [[23200,0.10],[67900,0.12],[145500,0.22],[310700,0.24],[394600,0.32],[750950,0.35],[Infinity,0.37]];
+  let prev=0;
+  for (const [limit,rate] of brackets) {
+    if (taxable<=0) break;
+    const chunk=Math.min(taxable-prev,limit-prev);
+    if (chunk>0) federal+=chunk*rate;
+    if (taxable<=limit) break;
+    prev=limit;
+  }
+  const fica    = gross * 0.0765; // 6.2% SS + 1.45% Medicare
+  const stateTax= gross * stateR;
+  const netAnn  = gross - federal - fica - stateTax;
+  setEl('sal_gross_out',  fmtMoney(gross));
+  setEl('sal_federal',    '-'+fmtMoney(federal));
+  setEl('sal_fica',       '-'+fmtMoney(fica));
+  setEl('sal_state_tax',  '-'+fmtMoney(stateTax));
+  setEl('sal_net',        fmtMoney(netAnn));
+  setEl('sal_net_monthly',fmtMoney(netAnn/12)+'/mes');
+}
+
+// ── TABS ──────────────────────────────────────────
+function showTab(panelId, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  // Trigger calc
+  if (panelId==='tab-inflation') calcInflation();
+  if (panelId==='tab-millionaire') calcMillionaire();
+  if (panelId==='tab-dividend') calcDividend();
+  if (panelId==='tab-buyvrent') calcBuyVsRent();
+  if (panelId==='tab-fire') calcFIRE();
+  if (panelId==='tab-salary') calcSalaryUSA();
+}
+
+// ── MODALS ────────────────────────────────────────
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('page-overlay')) {
+    e.target.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+
+// ── NET WORTH CALCULATOR ──────────────────────────
+function addNwRow(listId) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  const row = document.createElement('div');
+  row.className = 'nw-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Descripción" oninput="calcNetWorth()" />
+    <input type="number" placeholder="Valor USD" value="0" oninput="calcNetWorth()" class="nw-val" />
+    <button class="nw-del-btn" onclick="removeNwRow(this)">✕</button>`;
+  list.appendChild(row);
+}
+function removeNwRow(btn) {
+  btn.closest('.nw-row').remove();
+  calcNetWorth(); calcDebt();
+}
+function calcNetWorth() {
+  let assets = 0, debts = 0;
+  document.querySelectorAll('#nw-assets-list .nw-val').forEach(i => assets += parseFloat(i.value)||0);
+  document.querySelectorAll('#nw-debts-list .nw-val').forEach(i => debts += parseFloat(i.value)||0);
+  const net = assets - debts;
+  setEl('nw-total-assets', fmtMoney(assets));
+  setEl('nw-total-debts', fmtMoney(debts));
+  const el = document.getElementById('nw-total-net');
+  if (el) {
+    el.textContent = fmtMoney(net);
+    el.className = 'm-val ' + (net >= 0 ? 'green' : 'red');
+    el.style.fontSize = '24px';
+  }
+}
+
+// ── BUDGET 50/30/20 ───────────────────────────────
+function calcBudget() {
+  const income = parseFloat(document.getElementById('bg_income')?.value) || 0;
+  const fixed = parseFloat(document.getElementById('bg_fixed')?.value) || 0;
+  const variable = parseFloat(document.getElementById('bg_variable')?.value) || 0;
+  const savingsActual = parseFloat(document.getElementById('bg_savings')?.value) || 0;
+  const needs = income * 0.50;
+  const wants = income * 0.30;
+  const saveIdeal = income * 0.20;
+  const totalSpending = fixed + variable;
+  const diff = savingsActual - saveIdeal;
+  setEl('bg_needs', fmtMoney(needs));
+  setEl('bg_wants', fmtMoney(wants));
+  setEl('bg_save_ideal', fmtMoney(saveIdeal));
+  setEl('bg_save_actual', fmtMoney(savingsActual));
+  const diffEl = document.getElementById('bg_diff');
+  if (diffEl) {
+    diffEl.textContent = (diff >= 0 ? '+' : '') + fmtMoney(diff);
+    diffEl.className = 'm-val ' + (diff >= 0 ? 'green' : 'red');
+  }
+  const advEl = document.getElementById('bg_advice');
+  if (advEl) {
+    if (diff >= 0) {
+      advEl.style.background = 'var(--green-bg)';
+      advEl.style.border = '1px solid var(--green-border)';
+      advEl.innerHTML = `✅ <strong style="color:var(--green-dark)">¡Buen trabajo!</strong> Estás ahorrando ${fmtMoney(diff)} más de lo recomendado. Considera invertir el excedente en tu 401(k), IRA o ETFs de índice.`;
+    } else {
+      advEl.style.background = 'var(--amber-bg)';
+      advEl.style.border = '1px solid #f0d087';
+      advEl.innerHTML = `⚠️ <strong>Área de mejora:</strong> Te faltan ${fmtMoney(Math.abs(diff))} al mes para alcanzar el 20% recomendado. Revisa tus gastos variables — pequeños recortes pueden hacer una gran diferencia.`;
+    }
+  }
+}
+
+// ── DEBT PAYOFF CALCULATOR ────────────────────────
+let debtMethod = 'avalanche';
+function setDebtMethod(method) {
+  debtMethod = method;
+  document.getElementById('method-avalanche')?.classList.toggle('active', method === 'avalanche');
+  document.getElementById('method-snowball')?.classList.toggle('active', method === 'snowball');
+  calcDebt();
+}
+function addDebtRow() {
+  const list = document.getElementById('debt-list');
+  if (!list) return;
+  const row = document.createElement('div');
+  row.className = 'nw-row';
+  row.innerHTML = `
+    <input type="text" value="Nueva deuda" oninput="calcDebt()" />
+    <input type="number" value="1000" oninput="calcDebt()" class="debt-bal" />
+    <input type="number" value="15" step="0.01" oninput="calcDebt()" class="debt-apr" />
+    <button class="nw-del-btn" onclick="removeNwRow(this);calcDebt()">✕</button>`;
+  list.appendChild(row);
+  calcDebt();
+}
+function calcDebt() {
+  const rows = document.querySelectorAll('#debt-list .nw-row');
+  const extra = parseFloat(document.getElementById('debt_extra')?.value) || 0;
+  let debts = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const name = inputs[0]?.value || 'Deuda';
+    const bal = parseFloat(inputs[1]?.value) || 0;
+    const apr = parseFloat(inputs[2]?.value) || 0;
+    if (bal > 0) debts.push({ name, bal, apr, minPay: Math.max(bal * 0.02, 25) });
+  });
+  if (!debts.length) return;
+  const total = debts.reduce((s, d) => s + d.bal, 0);
+  setEl('debt_total', fmtMoney(total));
+  // Sort by method
+  const sorted = [...debts].sort((a, b) =>
+    debtMethod === 'avalanche' ? b.apr - a.apr : a.bal - b.bal
+  );
+  // Simple simulation
+  let balances = sorted.map(d => d.bal);
+  let totalInterest = 0, months = 0;
+  const minPays = sorted.map(d => d.minPay);
+  while (balances.some(b => b > 0) && months < 600) {
+    let extraLeft = extra;
+    for (let i = 0; i < balances.length; i++) {
+      if (balances[i] <= 0) continue;
+      const interest = balances[i] * (sorted[i].apr / 100 / 12);
+      totalInterest += interest;
+      balances[i] += interest;
+      const pay = Math.min(balances[i], minPays[i]);
+      balances[i] -= pay;
+    }
+    // Apply extra to first non-zero
+    for (let i = 0; i < balances.length; i++) {
+      if (balances[i] <= 0) continue;
+      const payment = Math.min(extraLeft, balances[i]);
+      balances[i] -= payment;
+      extraLeft -= payment;
+      if (extraLeft <= 0) break;
+    }
+    months++;
+  }
+  const years = Math.floor(months / 12);
+  const mos = months % 12;
+  setEl('debt_saved', fmtMoney(totalInterest));
+  setEl('debt_months', years > 0 ? `${years}a ${mos}m` : `${mos} meses`);
+  const orderEl = document.getElementById('debt_order');
+  if (orderEl) {
+    orderEl.innerHTML = `<strong>Orden de pago (${debtMethod === 'avalanche' ? 'mayor APR primero' : 'menor saldo primero'}):</strong><br>` +
+      sorted.map((d, i) => `${i+1}. ${d.name} — $${d.bal.toLocaleString()} al ${d.apr}% APR`).join('<br>');
+  }
+}
+
+// ── 401k MAXIMIZER ────────────────────────────────
+function calc401k() {
+  const salary = parseFloat(document.getElementById('k_salary')?.value) || 0;
+  const contrib = parseFloat(document.getElementById('k_contrib')?.value) || 0;
+  const matchPct = parseFloat(document.getElementById('k_match')?.value) || 0;
+  const years = parseFloat(document.getElementById('k_years')?.value) || 0;
+  const ret = parseFloat(document.getElementById('k_return')?.value) || 7;
+  const age = parseFloat(document.getElementById('k_age')?.value) || 35;
+  const limit = age >= 50 ? 31000 : 23500;
+  const yourAnnual = salary * (contrib / 100);
+  const matchAnnual = salary * (Math.min(contrib, matchPct) / 100);
+  const totalAnnual = yourAnnual + matchAnnual;
+  const r = ret / 100;
+  const fv = totalAnnual * ((Math.pow(1 + r, years) - 1) / r);
+  const taxSaved = yourAnnual * 0.22; // assume 22% bracket
+  setEl('k_your_annual', fmtMoney(yourAnnual));
+  setEl('k_match_annual', fmtMoney(matchAnnual));
+  setEl('k_total', fmtMoney(fv));
+  const maxEl = document.getElementById('k_maxing');
+  if (maxEl) {
+    if (yourAnnual >= limit) {
+      maxEl.textContent = '✅ Sí';
+      maxEl.className = 'm-val green';
+    } else {
+      maxEl.textContent = '❌ No';
+      maxEl.className = 'm-val red';
+    }
+  }
+  setEl('k_tax_saved', fmtMoney(taxSaved));
+  const advEl = document.getElementById('k_advice');
+  if (advEl) {
+    if (contrib < matchPct) {
+      advEl.innerHTML = `⚠️ <strong>¡Dinero gratis perdido!</strong> Tu empleador ofrece hasta ${matchPct}% de match pero solo contribuyes ${contrib}%. Aumenta tu contribución al menos a ${matchPct}% para obtener $${fmtMoney(matchAnnual * 2 - matchAnnual)} adicionales al año.`;
+    } else if (yourAnnual < limit) {
+      const toMax = limit - yourAnnual;
+      advEl.innerHTML = `💡 <strong>Puedes contribuir más.</strong> Te faltan ${fmtMoney(toMax)}/año para maximizar tu 401(k). Aumentar tu contribución al ${((limit/salary)*100).toFixed(1)}% te llevaría al límite IRS de ${fmtMoney(limit)}/año.`;
+    } else {
+      advEl.innerHTML = `🎉 <strong>¡Excelente!</strong> Estás maximizando tu 401(k). Considera también maximizar tu IRA (hasta $7,000/año) y una cuenta HSA si tienes seguro médico de alto deducible.`;
+    }
+  }
+}
+
+// ── PRO TABS ──────────────────────────────────────
+function showProTab(panelId, btn) {
+  document.querySelectorAll('#pro-tools .tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#pro-tools .tab-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (panelId === 'tab-networth') calcNetWorth();
+  if (panelId === 'tab-budget') calcBudget();
+  if (panelId === 'tab-debt') calcDebt();
+  if (panelId === 'tab-401k') calc401k();
+}
+
+// ── GLOSSARY ──────────────────────────────────────
+const GLOSSARY = [
+  {term:'ETF',cat:'Inversión',def:'Fondo cotizado en bolsa. Replica un índice (como el S&P 500). Comisiones muy bajas. Ideal para invertir pasivamente.'},
+  {term:'S&P 500',cat:'Índices',def:'Índice que incluye las 500 empresas más grandes de EE.UU. Es el referente global del mercado bursátil.'},
+  {term:'Dividendo',cat:'Inversión',def:'Pago que una empresa hace a sus accionistas, generalmente cada trimestre. Ingreso pasivo.'},
+  {term:'Inflación',cat:'Economía',def:'Aumento generalizado de precios. Reduce el poder adquisitivo del dinero con el tiempo.'},
+  {term:'Interés compuesto',cat:'Finanzas',def:'Interés calculado sobre el capital más los intereses acumulados. "La octava maravilla del mundo" (Einstein).'},
+  {term:'Bono',cat:'Inversión',def:'Deuda emitida por un gobierno o empresa. El inversionista presta dinero y recibe intereses periódicos.'},
+  {term:'Acción',cat:'Inversión',def:'Participación en la propiedad de una empresa. Su valor sube o baja según el desempeño de la compañía.'},
+  {term:'401(k)',cat:'Retiro USA',def:'Plan de retiro patrocinado por el empleador en EE.UU. Aportes pre-impuestos hasta $23,000/año (2024).'},
+  {term:'IRA / Roth IRA',cat:'Retiro USA',def:'Cuenta de retiro individual. Roth IRA: aportes post-impuestos, retiros libres de impuestos. Límite $7,000/año.'},
+  {term:'FIRE',cat:'Estrategia',def:'Financial Independence, Retire Early. Ahorrar agresivamente para jubilarse temprano. Meta: 25x gastos anuales.'},
+  {term:'Regla del 4%',cat:'Retiro',def:'Puedes retirar el 4% de tu portafolio anualmente sin agotar el dinero en 30+ años (estudio Trinity).'},
+  {term:'Índice Dow Jones',cat:'Índices',def:'Índice de 30 grandes empresas industriales de EE.UU. Uno de los más antiguos del mundo (1896).'},
+  {term:'Nasdaq',cat:'Índices',def:'Bolsa dominada por empresas tecnológicas. El Nasdaq-100 incluye las 100 mayores no financieras.'},
+  {term:'Liquidez',cat:'Finanzas',def:'Facilidad de convertir un activo en efectivo sin perder valor. El efectivo es el activo más líquido.'},
+  {term:'Apalancamiento',cat:'Riesgo',def:'Usar deuda para amplificar inversiones. Magnifica ganancias Y pérdidas. Alto riesgo.'},
+  {term:'Fondo índice',cat:'Inversión',def:'Fondo mutuo que replica un índice bursátil. Bajos costos. Estrategia favorita de Warren Buffett.'},
+  {term:'Portafolio diversificado',cat:'Estrategia',def:'Mezcla de activos (acciones, bonos, real estate, etc.) para reducir el riesgo total.'},
+  {term:'Volatilidad',cat:'Riesgo',def:'Variación del precio de un activo. Alta volatilidad = mayor riesgo y potencial de ganancia/pérdida.'},
+  {term:'Mercado alcista (Bull)',cat:'Mercado',def:'Período de subidas sostenidas del mercado (+20% desde mínimos). Optimismo generalizado.'},
+  {term:'Mercado bajista (Bear)',cat:'Mercado',def:'Caída del mercado del -20% o más. Pesimismo y recesiones económicas suelen acompañarlo.'},
+  {term:'Capitalización de mercado',cat:'Empresas',def:'Valor total de una empresa en bolsa = precio acción × número de acciones. Apple: >$3 billones.'},
+  {term:'P/E Ratio',cat:'Análisis',def:'Precio/Ganancias. Cuánto pagan los inversores por $1 de ganancia. P/E alto = expectativas altas.'},
+  {term:'Hipoteca',cat:'Deuda',def:'Préstamo garantizado con una propiedad inmueble. Si no pagas, el banco puede quedarse con la casa.'},
+  {term:'Amortización',cat:'Deuda',def:'Proceso de pagar una deuda en cuotas periódicas que incluyen capital e intereses.'},
+  {term:'Tasa de cambio',cat:'Divisas',def:'Precio de una moneda en términos de otra. USD/EUR = 0.92 significa 1 dólar = 0.92 euros.'},
+  {term:'Divisa de reserva',cat:'Divisas',def:'Moneda ampliamente usada en transacciones internacionales. El USD es la principal reserva mundial.'},
+  {term:'Criptomoneda',cat:'Cripto',def:'Moneda digital descentralizada. Bitcoin (BTC) y Ethereum (ETH) son las principales.'},
+  {term:'Blockchain',cat:'Cripto',def:'Tecnología de registro distribuido e inmutable. Base de las criptomonedas. Transparente y seguro.'},
+  {term:'DeFi',cat:'Cripto',def:'Finanzas Descentralizadas. Servicios financieros (préstamos, staking) sin intermediarios, vía smart contracts.'},
+  {term:'Staking',cat:'Cripto',def:'Bloquear criptomonedas para validar transacciones y ganar recompensas. Similar a un depósito bancario.'},
+  {term:'PIB / GDP',cat:'Economía',def:'Producto Interno Bruto. Valor total de bienes y servicios producidos en un país. Mide el tamaño de la economía.'},
+  {term:'Recesión',cat:'Economía',def:'Caída del PIB durante dos trimestres consecutivos. Desempleo sube, inversión baja.'},
+  {term:'Tasa de interés',cat:'Economía',def:'Costo del dinero. La Fed establece la tasa de referencia en EE.UU. Sube para controlar la inflación.'},
+  {term:'Banco Central',cat:'Economía',def:'Institución que controla la política monetaria. En EE.UU.: Federal Reserve. En la eurozona: BCE.'},
+  {term:'Hedge Fund',cat:'Inversión',def:'Fondo de inversión alternativo para inversores acreditados. Estrategias agresivas para altos rendimientos.'},
+  {term:'Private Equity',cat:'Inversión',def:'Inversión directa en empresas no listadas en bolsa. Requiere grandes capitales y plazos largos.'},
+  {term:'REIT',cat:'Inversión',def:'Real Estate Investment Trust. Fondo que invierte en inmuebles. Paga el 90% de beneficios como dividendos.'},
+  {term:'Dollar-Cost Averaging',cat:'Estrategia',def:'Invertir una cantidad fija periódicamente. Reduce el riesgo de invertir todo en un mal momento.'},
+  {term:'Rebalanceo',cat:'Estrategia',def:'Ajustar tu portafolio para volver a tu asignación objetivo. Ej: 60% acciones, 40% bonos.'},
+  {term:'Stop Loss',cat:'Trading',def:'Orden automática para vender cuando el precio baja a un nivel determinado. Limita pérdidas.'},
+  {term:'Análisis técnico',cat:'Trading',def:'Predecir precios usando gráficos y patrones históricos. Velas japonesas, RSI, MACD, soportes.'},
+  {term:'Análisis fundamental',cat:'Trading',def:'Evaluar el valor real de una empresa con sus estados financieros, ventaja competitiva y perspectivas.'},
+  {term:'Spread',cat:'Divisas',def:'Diferencia entre precio de compra (ask) y venta (bid) de un activo. Es el costo del broker.'},
+  {term:'Pip',cat:'Forex',def:'Mínimo movimiento de precio en forex. En EUR/USD, 1 pip = 0.0001.'},
+  {term:'Margen',cat:'Trading',def:'Depósito requerido para abrir posición apalancada. 1% margen = apalancamiento 100x.'},
+];
+
+function buildGlossary(filter='') {
+  const grid = document.getElementById('glossaryGrid');
+  if (!grid) return;
+  const filtered = filter
+    ? GLOSSARY.filter(g => g.term.toLowerCase().includes(filter)||g.def.toLowerCase().includes(filter)||g.cat.toLowerCase().includes(filter))
+    : GLOSSARY;
+  grid.innerHTML = filtered.map(g=>`
+    <div class="gloss-item">
+      <div class="gloss-term">${g.term}</div>
+      <div class="gloss-def">${g.def}</div>
+      <span class="gloss-cat">${g.cat}</span>
+    </div>
+  `).join('');
+}
+
+function filterGlossary() {
+  const q = document.getElementById('glossSearch')?.value.toLowerCase()||'';
+  buildGlossary(q);
+}
+
+// ── TRENDING SEARCHES HANDLER ────────────────────
+function applyTrend(from, to, amount) {
+  const amt = document.getElementById('cvAmt');
+  if (amt) amt.value = amount;
+  selectDropdownValue('cvFrom', from);
+  selectDropdownValue('cvTo',   to);
+  doConvert();
+  // Scroll to converter
+  const section = document.getElementById('conversion');
+  if (section) section.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// ── LANGUAGE DETECTION & i18n ─────────────────────
+const TRANSLATIONS = {
+  en: {
+    heroDesc:   'Real-time currency converter, financial calculators, glossary, broker comparison and more. All free. No registration.',
+    heroStats1: 'Currencies', heroStats2: 'Calculators', heroStats3: 'Update', heroStats4: 'Terms',
+    navDivisas:'💱 Currencies', navConv:'🔄 Converter', navInteres:'📈 Interest',
+    navRetiro:'🏖️ Retirement', navPrestamo:'🏠 Loan', navHerr:'🧰 More', navGlos:'📚 Glossary',
+    navPro:'🇺🇸 Pro USA', navBrokers:'📊 Brokers',
+    navCta:'💬 Support',
+    secDiv:'Live exchange rates', secDivDesc:'Exchange rates updated from ExchangeRate-API',
+    secConv:'Currency Converter', secConvDesc:'Convert between 160+ currencies with live rates',
+    lblAmount:'Amount', lblFrom:'From', lblTo:'To', lblSwap:'Swap',
+    trendingTitle:'🔥 Most searched in the US · Currency Exchange',
+    footerDesc:'Free financial tools for everyone. No registration. Exchange rates are real when you connect your API key from exchangerate-api.com (free).',
+  },
+  es: {
+    heroDesc:   'Conversores de divisas en tiempo real, calculadoras financieras, glosario, comparador de brokers y más. Todo gratis. Sin registro.',
+    heroStats1: 'Monedas', heroStats2: 'Calculadoras', heroStats3: 'Actualización', heroStats4: 'Términos',
+    navDivisas:'💱 Divisas', navConv:'🔄 Conversor', navInteres:'📈 Interés',
+    navRetiro:'🏖️ Retiro', navPrestamo:'🏠 Préstamo', navHerr:'🧰 Más', navGlos:'📚 Glosario',
+    navPro:'🇺🇸 Pro USA', navBrokers:'📊 Brokers',
+    navCta:'💬 Soporte',
+    secDiv:'Divisas en tiempo real', secDivDesc:'Tasas de cambio actualizadas desde ExchangeRate-API',
+    secConv:'Conversor de divisas', secConvDesc:'Convierte entre más de 160 monedas con tasas en vivo',
+    lblAmount:'Monto', lblFrom:'De', lblTo:'A', lblSwap:'Intercambiar',
+    trendingTitle:'🔥 Lo más buscado en EEUU · Cambio de divisas',
+    footerDesc:'Herramientas financieras gratuitas para todo el mundo. Sin registro. Las tasas de cambio son reales cuando conectas tu API key de exchangerate-api.com (gratis).',
+  },
+  pt: {
+    heroDesc:   'Conversor de moedas em tempo real, calculadoras financeiras, glossário, comparador de corretoras e mais. Tudo gratuito. Sem cadastro.',
+    heroStats1: 'Moedas', heroStats2: 'Calculadoras', heroStats3: 'Atualização', heroStats4: 'Termos',
+    navDivisas:'💱 Moedas', navConv:'🔄 Conversor', navInteres:'📈 Juros',
+    navRetiro:'🏖️ Aposentadoria', navPrestamo:'🏠 Empréstimo', navHerr:'🧰 Mais', navGlos:'📚 Glossário',
+    navPro:'🇺🇸 Pro EUA', navBrokers:'📊 Corretoras',
+    navCta:'💬 Suporte',
+    secDiv:'Câmbio em tempo real', secDivDesc:'Taxas de câmbio atualizadas da ExchangeRate-API',
+    secConv:'Conversor de moedas', secConvDesc:'Converta entre mais de 160 moedas com taxas ao vivo',
+    lblAmount:'Valor', lblFrom:'De', lblTo:'Para', lblSwap:'Trocar',
+    trendingTitle:'🔥 Mais buscado nos EUA · Câmbio de moedas',
+    footerDesc:'Ferramentas financeiras gratuitas para todos. Sem cadastro. As taxas são reais quando você conecta sua chave de API da exchangerate-api.com (gratuita).',
+  },
+  fr: {
+    heroDesc:   'Convertisseur de devises en temps réel, calculatrices financières, glossaire, comparateur de courtiers et plus. Tout gratuit. Sans inscription.',
+    heroStats1: 'Devises', heroStats2: 'Calculatrices', heroStats3: 'Mise à jour', heroStats4: 'Termes',
+    navDivisas:'💱 Devises', navConv:'🔄 Convertisseur', navInteres:'📈 Intérêts',
+    navRetiro:'🏖️ Retraite', navPrestamo:'🏠 Prêt', navHerr:'🧰 Plus', navGlos:'📚 Glossaire',
+    navPro:'🇺🇸 Pro USA', navBrokers:'📊 Courtiers',
+    navCta:'💬 Support',
+    secDiv:'Taux de change en direct', secDivDesc:'Taux de change mis à jour depuis ExchangeRate-API',
+    secConv:'Convertisseur de devises', secConvDesc:'Convertissez entre plus de 160 devises avec des taux en direct',
+    lblAmount:'Montant', lblFrom:'De', lblTo:'À', lblSwap:'Échanger',
+    trendingTitle:'🔥 Les plus recherchés aux USA · Change de devises',
+    footerDesc:"Outils financiers gratuits pour tous. Sans inscription. Les taux sont réels quand vous connectez votre clé API d'exchangerate-api.com (gratuite).",
+  },
+  de: {
+    heroDesc:   'Echtzeit-Währungsrechner, Finanzrechner, Glossar, Broker-Vergleich und mehr. Alles kostenlos. Ohne Registrierung.',
+    heroStats1: 'Währungen', heroStats2: 'Rechner', heroStats3: 'Aktualisierung', heroStats4: 'Begriffe',
+    navDivisas:'💱 Währungen', navConv:'🔄 Umrechner', navInteres:'📈 Zinsen',
+    navRetiro:'🏖️ Rente', navPrestamo:'🏠 Kredit', navHerr:'🧰 Mehr', navGlos:'📚 Glossar',
+    navPro:'🇺🇸 Pro USA', navBrokers:'📊 Broker',
+    navCta:'💬 Support',
+    secDiv:'Wechselkurse live', secDivDesc:'Wechselkurse aktualisiert von ExchangeRate-API',
+    secConv:'Währungsrechner', secConvDesc:'Konvertieren zwischen 160+ Währungen mit Live-Kursen',
+    lblAmount:'Betrag', lblFrom:'Von', lblTo:'Nach', lblSwap:'Tauschen',
+    trendingTitle:'🔥 Meistgesucht in den USA · Währungsumrechnung',
+    footerDesc:'Kostenlose Finanztools für alle. Ohne Registrierung. Kurse sind live wenn Sie Ihren API-Key von exchangerate-api.com verbinden (kostenlos).',
+  }
+};
+
+let currentLang = 'es';
+
+function detectLanguage() {
+  // Try geolocation via IP
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(data => {
+      const country = data.country_code || '';
+      const lang = navigator.language || navigator.userLanguage || '';
+      let detectedLang = 'es'; // default
+      // Country-based detection
+      if (['US','GB','AU','CA','NZ','IE'].includes(country)) detectedLang = 'en';
+      else if (['BR'].includes(country)) detectedLang = 'pt';
+      else if (['FR','BE','CH','LU','MC'].includes(country)) detectedLang = 'fr';
+      else if (['DE','AT','LI'].includes(country)) detectedLang = 'de';
+      else if (lang.startsWith('pt')) detectedLang = 'pt';
+      else if (lang.startsWith('fr')) detectedLang = 'fr';
+      else if (lang.startsWith('de')) detectedLang = 'de';
+      else if (lang.startsWith('en')) detectedLang = 'en';
+
+      if (detectedLang !== 'es' && detectedLang !== currentLang) {
+        offerLanguageSwitch(detectedLang, country);
+      }
+    })
+    .catch(() => {
+      // Fallback: use browser language
+      const lang = (navigator.language || '').toLowerCase();
+      if (lang.startsWith('en')) offerLanguageSwitch('en', '');
+      else if (lang.startsWith('pt')) offerLanguageSwitch('pt', '');
+      else if (lang.startsWith('fr')) offerLanguageSwitch('fr', '');
+      else if (lang.startsWith('de')) offerLanguageSwitch('de', '');
+    });
+}
+
+const LANG_NAMES = { en:'English', es:'Español', pt:'Português', fr:'Français', de:'Deutsch' };
+const LANG_FLAGS = { en:'🇺🇸', es:'🇪🇸', pt:'🇧🇷', fr:'🇫🇷', de:'🇩🇪' };
+
+function offerLanguageSwitch(lang, country) {
+  const existing = document.getElementById('langNotice');
+  if (existing) existing.remove();
+  const notice = document.createElement('div');
+  notice.id = 'langNotice';
+  notice.innerHTML = `${LANG_FLAGS[lang]} Switch to ${LANG_NAMES[lang]}? <button onclick="applyLanguage('${lang}');document.getElementById('langNotice').remove()" style="background:rgba(255,255,255,0.25);border:none;color:#fff;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;font-family:var(--font);margin-left:6px">Yes</button><span class="ln-close" onclick="document.getElementById('langNotice').remove()">✕</span>`;
+  document.body.appendChild(notice);
+  setTimeout(() => { const n = document.getElementById('langNotice'); if(n) n.remove(); }, 8000);
+}
+
+function applyLanguage(lang) {
+  if (!TRANSLATIONS[lang]) return;
+  currentLang = lang;
+  const t = TRANSLATIONS[lang];
+  // Hero description
+  const heroP = document.querySelector('.hero p');
+  if (heroP) heroP.innerHTML = t.heroDesc;
+  // Stats labels
+  const statLabels = document.querySelectorAll('.hs-label');
+  const labelKeys = ['heroStats1','heroStats2','heroStats3','heroStats4'];
+  statLabels.forEach((el,i) => { if(labelKeys[i]) el.textContent = t[labelKeys[i]]; });
+  // Nav links
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const navKeys = ['navDivisas','navConv','navInteres','navRetiro','navPrestamo','navHerr','navGlos','navPro','navBrokers'];
+  navLinks.forEach((el,i) => { if(navKeys[i]) el.innerHTML = t[navKeys[i]]; });
+  const navCta = document.querySelector('.nav-cta');
+  if (navCta) navCta.textContent = t.navCta;
+  // Section headers
+  const secDivH = document.querySelector('#divisas h2');
+  if (secDivH) secDivH.textContent = t.secDiv;
+  const secDivD = document.querySelector('#divisas .section-desc');
+  if (secDivD) secDivD.textContent = t.secDivDesc;
+  const secConvH = document.querySelector('#conversion h2');
+  if (secConvH) secConvH.textContent = t.secConv;
+  const secConvD = document.querySelector('#conversion .section-desc');
+  if (secConvD) secConvD.textContent = t.secConvDesc;
+  // Converter labels
+  const lblAmt = document.getElementById('lbl-amount');
+  const lblFrom = document.getElementById('lbl-from');
+  const lblTo   = document.getElementById('lbl-to');
+  if (lblAmt)  lblAmt.textContent  = t.lblAmount;
+  if (lblFrom) lblFrom.textContent = t.lblFrom;
+  if (lblTo)   lblTo.textContent   = t.lblTo;
+  // Trending title
+  const tTitle = document.getElementById('trendingTitle');
+  if (tTitle) tTitle.textContent = t.trendingTitle;
+  // Dropdown search placeholders
+  ['cvFrom','cvTo'].forEach(id => {
+    const s = document.getElementById('search-'+id);
+    if (s) s.placeholder = lang==='es'?'Buscar moneda...':(lang==='pt'?'Buscar moeda...':'Search currency...');
+  });
+}
+
+// ── ENHANCED COINS ANIMATION ──────────────────────
+
+function initCoinsCanvas() {
+  const canvas = document.getElementById('coins-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W = canvas.width  = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  });
+  const SYMBOLS = ['$','€','£','¥','₿','₣','₩','฿','₹','₡','₦','kr','Fr','元','₱','₽','৳','₸','₴','﷼'];
+  const GREEN_PALETTE = [
+    '#1D9E75','#4EEAB0','#0F6E56','#2DD68A','#38F5A0',
+    '#1abc74','#00c96b','#34d399','#6ee7b7','#a7f3d0',
+    '#059669','#10b981','#047857','#065f46','#d1fae5',
+  ];
+  const coins = Array.from({length:80}, () => ({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    vy: 0.4 + Math.random()*0.9,
+    vx: (Math.random()-0.5)*0.5,
+    sym: SYMBOLS[Math.floor(Math.random()*SYMBOLS.length)],
+    size: 16 + Math.random()*28,
+    rot: Math.random()*Math.PI*2,
+    rotSpeed: (Math.random()-0.5)*0.025,
+    alpha: 0.4 + Math.random()*0.6,
+    color: GREEN_PALETTE[Math.floor(Math.random()*GREEN_PALETTE.length)],
+    pulse: Math.random()*Math.PI*2,
+    pulseSpeed: 0.02 + Math.random()*0.03,
+  }));
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    coins.forEach(c => {
+      c.pulse += c.pulseSpeed;
+      const dynamicAlpha = c.alpha * (0.7 + 0.3 * Math.sin(c.pulse));
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.rot);
+      ctx.globalAlpha = dynamicAlpha;
+      // Glow effect
+      ctx.shadowColor = c.color;
+      ctx.shadowBlur = 8;
+      ctx.font = `bold ${c.size}px DM Mono, monospace`;
+      ctx.fillStyle = c.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(c.sym, 0, 0);
+      ctx.restore();
+      c.y += c.vy; c.x += c.vx; c.rot += c.rotSpeed;
+      if (c.y > H+40)  { c.y=-40; c.x=Math.random()*W; }
+      if (c.x > W+40)  c.x=-40;
+      if (c.x < -40)   c.x=W+40;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── WHATSAPP BUTTON ───────────────────────────────
+// Update this number to your real WhatsApp number: +51XXXXXXXXX or +1XXXXXXXXX
+const WA_NUMBER = '51934734478'; // <-- CAMBIA A TU NÚMERO REAL
+const WA_MSG = encodeURIComponent('Hola, necesito ayuda con FinanceHub 😊');
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('whatsappBtn');
+  if (btn) btn.href = `https://wa.me/${WA_NUMBER}?text=${WA_MSG}`;
+});
+
+// ── MAIN INIT ─────────────────────────────────────
+function updateAllUI() {
+  buildTicker(); buildGrid(); updateMainCard(); doConvert(); updateConvTable();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCoinsCanvas();
+  initCookieBanner();
+  detectLanguage();
+  initRates();
+  buildTicker();
+  buildGrid();
+  initLiveChart();
+  updateMainCard();
+  buildConvSelects();
+  doConvert();
+  updateConvTable();
+  calcCompound();
+  calcRetire();
+  calcLoan();
+  calcInflation();
+  calcMillionaire();
+  calcDividend();
+  calcBuyVsRent();
+  calcFIRE();
+  calcSalaryUSA();
+  buildGlossary();
+  fetchRealRates(); // Auto-fetch via Cloudflare Worker proxy
+
+  // Tick cada 60s (simulado) o 2s para charts
+  setInterval(tick, 2000);
+  // Real API fetch cada 60s
+  setInterval(() => { fetchRealRates(); }, 60000); // Auto-refresh every 60s via proxy
+
+  console.log('✅ FinanceHub v4.0 — Tasas reales via Cloudflare Worker proxy: trabajo.gomezka339.workers.dev');
+});
+</script>
+</body>
+</html>
